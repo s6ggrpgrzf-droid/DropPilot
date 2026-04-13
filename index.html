@@ -995,7 +995,11 @@ return (
 );
 }
 
+try {
 ReactDOM.render(React.createElement(App), document.getElementById(“root”));
+} catch(err) {
+document.getElementById(“root”).innerHTML = ‘<div style="color:#FF453A;padding:20px;font-family:monospace;font-size:13px;white-space:pre-wrap;background:#111;margin:10px;border-radius:8px;border:1px solid #FF453A">ERROR:\n’ + err.message + ‘\n\n’ + (err.stack||’’) + ‘</div>’;
+}
 
   </script>
 </body>
