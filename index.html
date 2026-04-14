@@ -385,7 +385,6 @@ return (
 }
 </div>
 
-```
   <div style={{background:"rgba(255,159,10,0.06)",border:"1px solid rgba(255,159,10,0.18)",borderRadius:18,padding:"16px",marginBottom:20}}>
     <div style={{fontSize:14,fontWeight:800,color:A,marginBottom:3}}>Earnings Calculator</div>
     <div style={{fontSize:12,color:TXT2,marginBottom:14}}>What does $1 more per delivery add up to?</div>
@@ -430,7 +429,6 @@ return (
     );
   })}
 </div>
-```
 
 );
 }
@@ -592,7 +590,6 @@ return (
 {showToast && <Toast msg="Copied!" onDone={function(){setShowToast(false);}}/>}
 <SectionHead e="🛡️" title="Account Defense" sub="Protect your account when things go wrong." color={P}/>
 
-```
   <div style={{display:"flex",gap:6,marginBottom:14,overflowX:"auto",paddingBottom:4}}>
     {PLATFORMS.map(function(pl){
       return <PlatformPill key={pl.id} pl={pl} active={platform===pl.id} onClick={function(){setPlatform(pl.id); setExpAppeal(null);}}/>;
@@ -674,7 +671,6 @@ return (
     );
   })}
 </div>
-```
 
 );
 }
@@ -705,7 +701,6 @@ return (
 <div className=“tab-in” style={{padding:“24px 16px 8px”}}>
 <SectionHead e="📅" title="Today" sub="Track your daily habits and find your best platform." color={G}/>
 
-```
   <div style={{background:"rgba(48,209,88,0.06)",border:"1px solid rgba(48,209,88,0.2)",borderRadius:18,padding:"16px",marginBottom:18}}>
     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
       <div>
@@ -775,7 +770,6 @@ return (
     )}
   </div>
 </div>
-```
 
 );
 }
@@ -893,7 +887,6 @@ var FAQ = [
 return (
 <div style={{maxWidth:430,margin:“0 auto”,height:“100%”,display:“flex”,flexDirection:“column”,background:”#000”,color:TXT,position:“relative”}}>
 
-```
   <div style={{flex:1,overflowY:"auto",paddingBottom:76}}>
     {tab==="tips" && <TipsTab pro={pro} onUnlock={openPay}/>}
     {tab==="scripts" && <ScriptsTab pro={pro} onUnlock={openPay}/>}
@@ -990,7 +983,6 @@ return (
 
   <div onClick={handleTap} style={{position:"fixed",bottom:90,right:16,width:1,height:1,opacity:0}}/>
 </div>
-```
 
 );
 }
