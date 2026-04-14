@@ -1,35 +1,36 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-  <meta name="theme-color" content="#000000"/>
-  <title>DropPilot</title>
+  <meta name="theme-color" content="#0a0a1a"/>
+  <title>Hey Brandon 💛</title>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html,body,#root{height:100%;background:#000;overscroll-behavior:none;}
-body{-webkit-tap-highlight-color:transparent;font-family:'Outfit',system-ui,sans-serif;}
+html,body,#root{height:100%;overscroll-behavior:none;background:#0a0a1a;}
+body{-webkit-tap-highlight-color:transparent;font-family:'Outfit',system-ui,sans-serif;color:#fff;}
 input,textarea,button{font-family:inherit;}
-input[type=range]{-webkit-appearance:none;height:4px;border-radius:99px;background:rgba(255,255,255,0.12);outline:none;width:100%;}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#FF9F0A;cursor:pointer;}
-input::placeholder{color:rgba(255,255,255,0.3);}
-input:focus,textarea:focus{outline:none;}
 ::-webkit-scrollbar{display:none;}
 button{cursor:pointer;transition:opacity 0.14s;}
 button:active{opacity:0.75;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 @keyframes popIn{from{opacity:0;transform:scale(0.7)}to{opacity:1;transform:scale(1)}}
-@keyframes tabIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-@keyframes toastIn{from{opacity:0;transform:translate(-50%,-50%) scale(0.8)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
-@keyframes toastOut{from{opacity:1}to{opacity:0}}
-@keyframes navPop{0%{transform:scale(1)}40%{transform:scale(1.3)}100%{transform:scale(1)}}
-.tab-in{animation:tabIn 0.25s ease both;}
-.pop-in{animation:popIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both;}
-.fade-up{animation:fadeUp 0.3s ease both;}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+@keyframes twinkle{0%,100%{opacity:0.3}50%{opacity:1}}
+@keyframes saber{0%{box-shadow:0 0 8px #4fc3f7,0 0 20px #4fc3f7}50%{box-shadow:0 0 14px #4fc3f7,0 0 40px #4fc3f7,0 0 60px rgba(79,195,247,0.3)}100%{box-shadow:0 0 8px #4fc3f7,0 0 20px #4fc3f7}}
+@keyframes heartPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+
+.fade-up{animation:fadeUp 0.5s ease both;}
+.pop-in{animation:popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;}
+.float{animation:float 3s ease-in-out infinite;}
+.shimmer-text{background:linear-gradient(90deg,#ffd700,#fff,#ffd700,#fff,#ffd700);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 3s linear infinite;}
+.saber-glow{animation:saber 2s ease-in-out infinite;}
+.heart-pulse{animation:heartPulse 1.5s ease-in-out infinite;}
+.star{position:fixed;border-radius:50%;background:#fff;animation:twinkle var(--dur,3s) ease-in-out infinite;animation-delay:var(--del,0s);}
   </style>
 </head>
 <body>
@@ -41,953 +42,303 @@ button:active{opacity:0.75;}
 
 var useState = React.useState;
 var useEffect = React.useEffect;
-var useRef = React.useRef;
 
-var A = ‘#FF9F0A’;
-var AD = ‘#E8860A’;
-var G = ‘#30D158’;
-var B = ‘#0A84FF’;
-var T = ‘#5AC8FA’;
-var P = ‘#BF5AF2’;
-var R = ‘#FF453A’;
-var TXT = ‘#FFFFFF’;
-var TXT2 = ‘rgba(255,255,255,0.6)’;
-var TXT3 = ‘rgba(255,255,255,0.3)’;
-var S1 = ‘rgba(255,255,255,0.05)’;
-var BDR = ‘rgba(255,255,255,0.1)’;
-
-var UNLOCK_CODE = ‘DROP2026’;
-var STRIPE = ‘https://buy.stripe.com/cNieVd2z0acu3Wjfoi48000’;
-
-function lsGet(k, fb) {
-try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : fb; } catch(e) { return fb; }
-}
-function lsSet(k, v) {
-try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {}
-}
-function todayKey() {
-var d = new Date();
-return d.getFullYear() + ‘-’ + (d.getMonth()+1) + ‘-’ + d.getDate();
-}
-function yesterdayKey() {
-var d = new Date(); d.setDate(d.getDate()-1);
-return d.getFullYear() + ‘-’ + (d.getMonth()+1) + ‘-’ + d.getDate();
-}
-
-var ALL_TIPS = [
-{e:“👋”,t:“Greet with a smile”,s:“First impressions decide your rating.”,d:“Make brief eye contact and say something simple. You do not need to be chatty. Just be warm. Customers rate drivers who feel like real people much higher than ones who silently hand over the bag and walk away.”},
-{e:“🔔”,t:“Don’t knock on contactless orders”,s:“Top cause of surprise 1-star ratings.”,d:“If the customer chose Leave at Door, do NOT knock or ring the bell. Set the food down neatly, take a photo, and mark it delivered. Respecting that choice earns 5 stars.”},
-{e:“📸”,t:“Photo every single delivery”,s:“Your photo is your protection. No exceptions.”,d:“Take a clear photo showing the food AND the door or house number together. This protects you if a customer ever says they did not get their order. Make it a habit every single time.”},
-{e:“💬”,t:“Text 3-4 minutes before arrival”,s:“This one message earns more 5-star ratings than almost anything else.”,d:“A quick heads-up like ‘Hi! About 3 minutes away with your order!’ sets a professional tone before you even arrive. Customers who know you are coming almost always rate higher.”},
-{e:“🌡️”,t:“Handle the food like it’s your own meal”,s:“How you carry the bag tells them everything.”,d:“Hot food should arrive hot. Bags should not be crushed. Drinks should be upright. These small details tell the customer whether you cared. The drivers who treat every order carefully are the ones who get the best tips.”},
-{e:“⚡”,t:“Confirm the address before you walk up”,s:“Speed means nothing if you are at the wrong door.”,d:“A delivery to the wrong address is one of the fastest ways to lose your account. Take 5 seconds to confirm the address before you get out of your car.”},
-{e:“🤐”,t:“Never complain to the customer”,s:“Your bad day is not their problem.”,d:“Long restaurant wait, bad traffic, app issues - the customer did not cause any of it and does not want to hear about it. Keep every interaction warm and professional no matter how the shift is going.”},
-{e:“🎁”,t:“Small extras earn bigger tips”,s:“Extra napkins. A level bag. A steady hand. It adds up.”,d:“Grabbing a few extra napkins, keeping the bag level, making sure drinks are secured - none of these take more than a few seconds. But customers notice.”},
-{e:“🚪”,t:“Contactless means zero contact”,s:“No knock. No ring. Just deliver cleanly.”,d:“Leave at Door means exactly that. Set the food down neatly, take your photo, and confirm the delivery. A knock on a contactless order is one of the most common reasons good drivers get unexpected 1-star ratings.”},
-{e:“📞”,t:“When something goes wrong, text first”,s:“One proactive message prevents a bad review.”,d:“Gate code missing? Cannot find the unit? Nobody answering? Always text before you call or leave. A calm, simple text gives the customer a chance to help and shows you tried.”}
+var HYPE_MESSAGES = [
+  {e:"⚔️", quote:"\"I am not afraid to die protecting what is important to me.\"", char:"Inuyasha", vibe:"You fight just like that. Every. Single. Day."},
+  {e:"🌙", quote:"\"It is not that I care about you. I simply... find myself unwilling to see you suffer.\"", char:"Sesshomaru", vibe:"(He literally would NOT say this to just anyone. You're special. Obviously.)"},
+  {e:"🌸", quote:"\"Even if I lose this feeling, I'll still keep on loving you.\"", char:"Kagome", vibe:"That's you. That's literally just you."},
+  {e:"🚀", quote:"\"Never tell me the odds!\"", char:"Han Solo", vibe:"The odds were 3,720 to 1 and he did it anyway. So can you."},
+  {e:"⭐", quote:"\"I've got a bad feeling about this.\"", char:"Han Solo", vibe:"Same, but you always come out the other side. Always."},
+  {e:"🌺", quote:"\"I didn't ask for your help!\" \"And yet here I am.\"", char:"Inuyasha & Kagome", vibe:"Sometimes the best people just show up. You are those people."},
+  {e:"🐾", quote:"\"I want to protect her. Even if it destroys me.\"", char:"Inuyasha", vibe:"The way you care about people? This is literally you, no notes."},
+  {e:"🌟", quote:"\"Don't let anyone make you feel like you don't deserve what you want.\"", char:"Han Solo (vibes)", vibe:"You deserve EVERYTHING. Write that down."},
 ];
 
-var MSG_CATS = [
-{e:“📲”,t:“Arriving Now”,sub:“Texts that get 5-star ratings”,secs:[
-{h:“Standard arrival”,msg:“Hey! Pulling up now with your order from [restaurant]. I’ll leave it at your door. Enjoy!”,w:“Sets expectations before they open the app.”},
-{h:“A few minutes away”,msg:“Hi! Just a heads up - about 3-4 minutes away with your food. See you soon!”,w:“Advance notice means they are ready when you arrive.”},
-{h:“Apartment building”,msg:“Hi! I’m at the main entrance with your order. Could you buzz me in or meet me at the lobby? Thanks!”,w:“Always text before calling for apartments.”},
-{h:“Leave at door confirmation”,msg:“Your order has been left at your door. Enjoy your meal!”,w:“A quick confirmation nearly eliminates false non-delivery complaints.”},
-]},
-{e:“⏰”,t:“Running Late”,sub:“How to turn a bad situation into a 5-star”,secs:[
-{h:“Restaurant taking forever”,msg:“Hey! Your order is still being prepared at the restaurant. I’m here and will head your way as soon as it’s ready. Sorry for the wait!”,w:“Customers who hear nothing assume you forgot them.”},
-{h:“Stuck in traffic”,msg:“Hi! Running a little behind due to traffic. On my way and will be there as soon as I can - thanks for your patience!”,w:“Never blame the app or restaurant. Own it briefly and stay positive.”},
-{h:“Follow up after a late delivery”,msg:“Just dropped off your order - really sorry for the wait tonight. Hope everything still tastes great! Have a good evening.”,w:“Almost no drivers do this. It often turns a 3-star into a 5-star.”},
-]},
-{e:“🚨”,t:“When Something Goes Wrong”,sub:“Scripts that protect your rating”,secs:[
-{h:“Cannot find the address”,msg:“Hi! Having a little trouble locating you. I’m near [landmark]. Could you help with directions or a gate code?”,w:“Always text before calling. Give them something specific to work with.”},
-{h:“Need a gate code”,msg:“Hi! At the gate but need a code to get in. Could you send it over? Right here!”,w:“People respond in seconds when their food is right outside.”},
-{h:“No one answers the door”,msg:“Hi! At your door and knocked. I’ll wait a couple minutes - if I don’t hear back I may need to leave it at the door. Just want to make sure you get it!”,w:“Documents your attempt and gives them a chance to respond.”},
-{h:“Large apartment complex”,msg:“Hi! I’m in the parking lot but having trouble finding your unit. Could you help - which building number or stairwell? Almost there!”,w:“Asking for a specific landmark gets you a useful answer fast.”},
-]},
-{e:“⭐”,t:“Tips and Ratings”,sub:“What to say to earn more”,secs:[
-{h:“Natural sign-off that earns tips”,msg:“Enjoy your meal! If anything ever comes up feel free to reach out through the app. Have a great night!”,w:“Positions you as someone who cares without ever asking for anything.”},
-{h:“When you added something extra”,msg:“Hi! The bag was light on napkins so I grabbed a few extras. Everything else looks good - enjoy!”,w:“If you don’t mention it they might not notice. If you do, it’s memorable.”},
-{h:“What you should NEVER say”,caution:true,msg:“Please leave me 5 stars! / I really need a good rating. / Could you add a tip? / This order was really far.”,w:“Asking for ratings or tips is against platform rules and makes customers uncomfortable.”},
-]},
+var REASONS = [
+  {e:"🫂", t:"You make hard days lighter"},
+  {e:"💡", t:"You notice what others miss"},
+  {e:"🐺", t:"You have Sesshomaru-level composure (mostly)"},
+  {e:"😂", t:"Your laugh is genuinely the best sound"},
+  {e:"🌸", t:"You love deeply like Kagome"},
+  {e:"🚀", t:"You never back down (very Han Solo of you)"},
+  {e:"🔥", t:"When you believe in something, you go all in"},
+  {e:"🌙", t:"You're beautiful even when you think you're not"},
+  {e:"⚔️", t:"You've overcome things that would stop most people"},
+  {e:"💛", t:"You are, objectively, someone's favourite person"},
 ];
 
-var PLATFORMS = [
-{id:“doordash”,label:“DoorDash”,color:”#FF3008”,e:“🔴”},
-{id:“ubereats”,label:“Uber Eats”,color:”#06C167”,e:“🟢”},
-{id:“spark”,label:“Spark”,color:”#0071CE”,e:“🔵”},
-{id:“instacart”,label:“Instacart”,color:”#43B02A”,e:“🟩”},
-{id:“amazonflex”,label:“Amazon Flex”,color:”#FF9900”,e:“📦”},
+var AFFIRMATIONS = [
+  "You are not too much. You are exactly enough.",
+  "The galaxy literally needed you specifically.",
+  "Sesshomaru didn't become Lord of the Western Lands by being 'pretty good.' Neither will you.",
+  "Han Solo flew through an asteroid field at 3,720-to-1 odds. Your situation? Way more manageable.",
+  "Inuyasha would half-demon-sprint through a demon horde for you. That's the energy you deserve.",
+  "You are doing better than you think you are.",
+  "Bad day? Even Kagome fell into the well. She still saved everything.",
+  "You are someone's favourite part of the day.",
+  "The force is strong with this one. (This one being you. Obviously.)",
+  "You are braver than you feel right now.",
+  "Sesshomaru crossed dimensions for Rin. You matter that much to the right people.",
+  "Rest is not giving up. Even Han Solo had to land the Falcon sometimes.",
 ];
 
-var HABITS = {
-doordash:[
-{e:“📸”,t:“Photo every drop-off before you leave”,why:“Your delivery photo is your #1 protection. DoorDash support checks it against your GPS location. A clear photo wins almost every false non-delivery case.”,urgent:true},
-{e:“💬”,t:“Text the customer on every order”,why:“Your in-app message history is timestamped and visible to support. When a customer claims you never communicated, your message thread proves otherwise.”,urgent:true},
-{e:“📍”,t:“Keep GPS on the entire shift”,why:“DoorDash logs your GPS location throughout the delivery. Without GPS data, your word means nothing in a dispute.”,urgent:true},
-{e:“🖼️”,t:“Screenshot your delivery confirmation”,why:“After the app shows delivery confirmed, screenshot it before moving on. This is the platform’s own timestamped record.”},
-{e:“📋”,t:“Note the order number on any problem delivery”,why:“This is what support agents use to pull your delivery record. Write it down or screenshot it immediately.”},
-],
-ubereats:[
-{e:“📸”,t:“Photo the drop-off - Uber requires it”,why:“Uber Eats requires a photo for contactless deliveries. It is timestamped, geotagged, and stored. Support pulls it immediately in any dispute.”,urgent:true},
-{e:“💬”,t:“Use in-app messaging only, never SMS”,why:“Uber support can only see your in-app message history, not regular text messages.”,urgent:true},
-{e:“📍”,t:“GPS must stay on - Uber uses it heavily”,why:“Uber’s dispute system relies on GPS trip data more than any other platform. If GPS was off, they cannot verify your delivery.”,urgent:true},
-{e:“🆔”,t:“Screenshot your Trip ID on problem deliveries”,why:“In any support appeal, you must include the Trip ID. Without it agents cannot find your record.”},
-{e:“🔄”,t:“Document long restaurant waits”,why:“If you wait more than 10 minutes at a restaurant, send the customer an in-app message noting the delay.”},
-],
-spark:[
-{e:“📸”,t:“Photo every drop-off - required for every order”,why:“Walmart Spark requires a delivery photo on every order. Take a clear photo showing the bags at the door with the house number visible.”,urgent:true},
-{e:“📦”,t:“Check and photograph the full order at the store”,why:“Before leaving the store, verify all items and note anything unavailable in the app.”,urgent:true},
-{e:“💬”,t:“Message customers about every substitution”,why:“When an item is unavailable, always message the customer through the Spark app before you leave the store.”,urgent:true},
-{e:“📍”,t:“GPS must stay on the entire trip”,why:“Spark uses GPS data to verify delivery location and timing.”},
-{e:“🧾”,t:“Screenshot your delivery summary”,why:“After completing an order, the Spark app shows a summary of what was delivered. Screenshot this every time.”},
-],
-instacart:[
-{e:“📸”,t:“Photo every drop-off - no exceptions”,why:“Instacart requires a delivery photo and uses it in every non-delivery dispute.”,urgent:true},
-{e:“🛒”,t:“Scan every item at the store”,why:“Instacart tracks which items you scanned. If a customer says an item was missing and you scanned it, that scan record is your proof.”,urgent:true},
-{e:“💬”,t:“Message customers about every replacement”,why:“When an item is out of stock, always message the customer through the Instacart app before you check out.”,urgent:true},
-{e:“📋”,t:“Note your Batch ID on any problem order”,why:“Instacart support identifies orders by Batch ID. You cannot file an effective appeal without it.”},
-{e:“🔄”,t:“Document difficult customers before they complain”,why:“If a customer is rude, note it in the app’s feedback right away. This creates a record before any dispute is filed.”},
-],
-amazonflex:[
-{e:“📸”,t:“Photo every single drop-off”,why:“Amazon Flex relies heavily on delivery photos. This is your #1 protection against never-received complaints.”,urgent:true},
-{e:“📍”,t:“Keep GPS on the entire block”,why:“Amazon logs your GPS route. In any dispute, support checks your GPS track against the delivery address and timestamp.”,urgent:true},
-{e:“🔢”,t:“Scan one address at a time on multi-package stops”,why:“This forces the app to prompt for a photo at every stop. Skipping this is a common reason drivers get dinged for missing packages.”,urgent:true},
-{e:“🖼️”,t:“Screenshot your delivery confirmation in the app”,why:“After marking delivered, screenshot the confirmation screen immediately. It shows the exact time and TBA numbers.”},
-{e:“📋”,t:“Note the Block ID and TBA numbers on problem deliveries”,why:“Support identifies your block by Block ID and individual packages by TBA. Note them immediately if anything feels off.”},
-],
-};
-
-var APPEALS = {
-doordash:[
-{e:“🚫”,t:“False Non-Delivery”,urgency:“HIGH - Can trigger deactivation”,color:”#FF453A”,msg:“Hello Dasher Support,\n\nI am writing to dispute a false non-delivery complaint on order #[ORDER ID] from [DATE].\n\nThis delivery was completed successfully:\n- Delivery photo showing the order placed at [ADDRESS]\n- GPS data confirming my location at [ADDRESS] at [TIME]\n- App delivery confirmation timestamp\n\nI am requesting:\n1. This complaint be reviewed against my delivery photo and GPS data\n2. Any negative impact on my completion rate be reversed\n\nThank you.”,why:“List each piece of evidence as a separate bullet. DoorDash agents work from checklists.”},
-{e:“⭐”,t:“Unfair Customer Rating”,urgency:“MEDIUM - Affects order access”,color:”#FF9F0A”,msg:“Hello Dasher Support,\n\nI am requesting removal of a 1-star rating on order #[ORDER ID] from [DATE].\n\nThis rating was caused by a restaurant error, not my performance:\n- I received a sealed bag from the restaurant\n- I had no ability to inspect or verify the contents\n- My delivery was completed correctly and on time\n\nDoorDash policy allows removal of ratings that reflect factors outside the Dasher’s control.\n\nThank you.”,why:”‘Factors outside the Dasher’s control’ is the exact language in DoorDash’s internal review policy.”},
-{e:“🔄”,t:“Escalation After Denial”,urgency:“USE AFTER A FIRST DENIAL”,color:”#BF5AF2”,msg:“Hello,\n\nI am following up on a previous support request regarding order #[ORDER ID] from [DATE].\n\nMy original appeal was not resolved. I am requesting escalation to a senior Dasher account specialist because:\n- My delivery photo evidence was not properly reviewed\n- The complaint directly contradicts my GPS track and delivery record\n\nI have been an active Dasher since [DATE] with a strong record. I am asking for a thorough senior review.\n\nThank you.”,why:“Asking for a ‘senior Dasher account specialist’ routes your ticket to a different tier.”},
-],
-ubereats:[
-{e:“🚫”,t:“False Non-Delivery”,urgency:“HIGH - Can affect account standing”,color:”#FF453A”,msg:“Hello Uber Eats Support,\n\nI am writing to dispute a non-delivery complaint on trip #[TRIP ID] from [DATE].\n\nI completed this delivery successfully:\n- Delivery photo taken at [ADDRESS] at [TIME]\n- GPS trip data showing my location at the delivery address\n- In-app delivery confirmation record\n\nI am requesting:\n1. This complaint be reviewed against my photo and GPS data\n2. Any negative effect on my account be reversed\n\nThank you.”,why:“Uber support works from Trip IDs. Include it in the first line.”},
-{e:“🔄”,t:“Escalation After Denial”,urgency:“USE AFTER A FIRST DENIAL”,color:”#BF5AF2”,msg:“Hello,\n\nI am following up on a previous request about Uber Eats trip #[TRIP ID] from [DATE].\n\nMy initial appeal was not resolved. I am requesting escalation to a senior account specialist because:\n- My photo and GPS evidence were not properly evaluated\n- The complaint contradicts my documented delivery record\n\nThank you.”,why:“Asking for ‘senior account specialist’ by name triggers a routing change.”},
-],
-spark:[
-{e:“🚫”,t:“False Non-Delivery”,urgency:“HIGH - Can affect Spark standing”,color:”#FF453A”,msg:“Hello Spark Driver Support,\n\nI am writing to dispute a non-delivery complaint on delivery #[DELIVERY ID] from [DATE].\n\nThis delivery was completed successfully:\n- Delivery photo showing the order placed at [ADDRESS]\n- GPS data confirming my location at [TIME]\n- App delivery confirmation timestamp\n\nI am requesting this complaint be reviewed and any negative impact reversed.\n\nThank you.”,why:“Spark support uses Delivery IDs to pull records. Include it in the first line.”},
-{e:“📦”,t:“Missing or Wrong Item”,urgency:“HIGH - Common Spark complaint”,color:”#FF453A”,msg:“Hello Spark Driver Support,\n\nI am writing to dispute a complaint about a missing item on delivery #[DELIVERY ID] from [DATE].\n\nThe item [ITEM NAME] was not available at the Walmart store. I handled this correctly:\n- Marked the item as unavailable in the Spark app\n- Selected an approved substitution\n- Messaged the customer through the app before checking out\n\nPlease review my in-app actions for this batch and remove this complaint.\n\nThank you.”,why:“Spark agents can see exactly what you did in the app. This appeal points them directly to that record.”},
-],
-instacart:[
-{e:“🚫”,t:“False Non-Delivery”,urgency:“HIGH - Can affect Shopper access”,color:”#FF453A”,msg:“Hello Instacart Support,\n\nI am writing to dispute a non-delivery complaint on batch #[BATCH ID] from [DATE].\n\nI completed this delivery successfully:\n- Delivery photo showing the bags at [ADDRESS]\n- GPS data confirming I was at the delivery location at [TIME]\n- All items in this batch were scanned and verified\n\nI am requesting:\n1. This complaint be reviewed against my delivery photo and GPS data\n2. Any impact on my Shopper rating be reversed\n\nThank you.”,why:“Including ‘all items were scanned’ is very strong evidence in Instacart disputes.”},
-{e:“📦”,t:“Missing Item Dispute”,urgency:“HIGH - Most common Instacart complaint”,color:”#FF453A”,msg:“Hello Instacart Support,\n\nI am disputing a complaint about a missing item on batch #[BATCH ID] from [DATE].\n\nThe item [ITEM NAME] was not available at [STORE NAME]. I handled this correctly:\n- Marked the item as out of stock in the Instacart app\n- Selected an approved replacement\n- Messaged the customer through the app before checking out\n\nMy in-app actions show I followed Instacart’s out-of-stock protocol exactly.\n\nThank you.”,why:“Instacart’s batch activity log shows every action you took. This appeal directs the agent to that log.”},
-],
-amazonflex:[
-{e:“🚫”,t:“Missing Package Complaint”,urgency:“HIGH - Directly affects standing”,color:”#FF453A”,msg:“Hello Amazon Flex Support,\n\nI am appealing a missing package complaint on Block [BLOCK ID] for package TBA [TBA NUMBER] delivered on [DATE].\n\nThis delivery was completed successfully:\n- Delivery photo taken through the Amazon Flex app showing the package at the customer’s door\n- GPS data confirming I was at the delivery address at [TIME]\n- App delivery confirmation record\n\nI request this complaint be reviewed and removed from my standing.\n\nThank you.”,why:“Always include Block ID and TBA. Amazon support can pull your exact GPS and photo records.”},
-{e:“🔄”,t:“Escalation After Denial”,urgency:“USE AFTER FIRST DENIAL”,color:”#BF5AF2”,msg:“Hello,\n\nI am following up on a previous appeal for Block [BLOCK ID] / TBA [TBA NUMBER].\n\nMy initial appeal was denied, but my delivery photo and GPS records clearly show the package was delivered. I request escalation to a senior specialist for full review.\n\nThank you.”,why:“Asking for ‘senior specialist’ often gets a fresh set of eyes on your case.”},
-],
-};
-
-var CHECKLIST = {
-doordash:[
-{e:“📸”,t:“Delivery photo taken showing door and bags”},
-{e:“💬”,t:“Customer messaged through DoorDash app”},
-{e:“📍”,t:“GPS was active the entire delivery”},
-{e:“📋”,t:“Order marked delivered in the app”},
-{e:“🖼️”,t:“Delivery confirmation screen screenshotted”},
-{e:“📝”,t:“Order number noted if anything felt off”},
-],
-ubereats:[
-{e:“📸”,t:“Photo submitted through Uber Eats app”},
-{e:“💬”,t:“Customer messaged in-app (not SMS)”},
-{e:“📍”,t:“GPS active for the full trip”},
-{e:“🆔”,t:“Trip ID screenshotted if anything went wrong”},
-{e:“📋”,t:“Delivery confirmed in the Uber Eats app”},
-{e:“⏱️”,t:“Long restaurant wait documented with a customer message”},
-],
-spark:[
-{e:“📸”,t:“Delivery photo taken showing all bags at door”},
-{e:“💬”,t:“Customer messaged about any changes”},
-{e:“📍”,t:“GPS active throughout the trip”},
-{e:“📋”,t:“Delivery confirmed in the Spark app”},
-{e:“🛒”,t:“Any out-of-stock items marked in app before checkout”},
-{e:“🧾”,t:“Delivery summary screenshotted after completion”},
-],
-instacart:[
-{e:“📸”,t:“Delivery photo submitted in the Instacart app”},
-{e:“🛒”,t:“All available items scanned in store”},
-{e:“💬”,t:“Customer messaged about any substitutions”},
-{e:“📍”,t:“GPS active throughout the entire batch”},
-{e:“📋”,t:“Batch confirmed complete in the app”},
-{e:“🧾”,t:“Batch summary screenshotted after delivery”},
-],
-amazonflex:[
-{e:“📸”,t:“Delivery photo taken in the Amazon Flex app”},
-{e:“📍”,t:“GPS was active for the entire block”},
-{e:“🔢”,t:“Scanned packages one address at a time”},
-{e:“🖼️”,t:“Delivery confirmation screen screenshotted”},
-{e:“📋”,t:“Block ID and TBA numbers noted if anything felt off”},
-{e:“🔄”,t:“Any undeliverable packages returned with correct reason code”},
-],
-};
-
-var BASICS = [
-{e:“🚀”,t:“Starting Out”,free:true,secs:[
-{h:“What these apps actually are”,body:“DoorDash, Uber Eats, Spark, and Instacart are apps that pay you to pick up orders and drop them off. You work when you want, stop when you want. Nobody is your boss.”,tip:“Try one platform for two weeks before signing up for others. Focus beats spreading thin.”},
-{h:“How you make money”,body:“You earn a base pay for each delivery. On top of that, customers can add a tip. Tips are usually where the real money comes from. Some apps also offer extra bonuses during busy times.”,tip:“Track your tips per hour, not per delivery. That number tells you which shifts and zones are worth your time.”},
-{h:“What a rating is and why it matters”,body:“After every delivery, customers can rate you from 1 to 5 stars. Your average rating across all deliveries is your score. If it gets too low, the app gives you fewer orders or removes you. Aim for 4.7 or higher.”,tip:“One bad rating hurts but it is not permanent. Your average smooths out over dozens of deliveries.”},
-{h:“What to do if you make a mistake”,body:“Everyone makes mistakes. Stay calm and communicate. Text the customer right away. Be honest and apologize briefly. Support can often reverse a bad rating if you have evidence you did your best.”,tip:“Own it fast. A calm, honest response usually lands better than any explanation.”},
-]},
-{e:“📱”,t:“Your Phone”,free:true,secs:[
-{h:“Why GPS must stay on”,body:“GPS is what tells the app where you are. Every platform tracks your location during a delivery. If GPS is off and a customer claims you never arrived, you have no way to prove them wrong.”,tip:“Check Settings and make sure Location is set to Always On for your delivery apps.”},
-{h:“How to keep your battery alive”,body:“Running GPS and maps all day drains your battery fast. Charge to 100 percent before your shift. Bring a car charger. If your battery hits 20 percent, plug in immediately.”,tip:“A dead phone mid-delivery can cost you your completion rate. Treat your charger like equipment.”},
-{h:“What to do if the app freezes”,body:“Press the home button, wait 5 seconds, then reopen it. If it crashes completely, close it fully by swiping it away in recent apps, then reopen. Your delivery will still be there.”,tip:“Force-close the app by swiping it away before reopening. Just pressing home sometimes leaves a bad state running.”},
-]},
-{e:“🏃”,t:“During a Delivery”,free:false,secs:[
-{h:“Step by step from acceptance to completion”,body:“1. Accept the order. 2. Drive to the restaurant. 3. Go inside and wait for the order. 4. Pick up the bag carefully. 5. Drive to the customer. 6. Hand off or leave at the door. 7. Take a photo. 8. Mark it delivered.”,tip:“Develop the same routine every single delivery. Habits protect you when you are tired or rushed.”},
-{h:“What Leave at Door actually means”,body:“Leave at Door means do NOT knock or ring the bell. Place the bag neatly at the door, take a clear photo showing the bag and the door number, then mark it delivered.”,tip:“No knock. No ring. Just leave it clean and move on.”},
-{h:“Taking the delivery photo”,body:“Your photo should show the bag sitting at the door with the door number or address visible. This photo is your proof that you delivered. Take it every single time, no exceptions.”,tip:“Make the photo habit non-negotiable. You will not remember to do it when something goes wrong unless it is already automatic.”},
-{h:“What to do if you cannot find the address”,body:“First, double-check the address in the app. Second, call or text the customer using the in-app option. Third, if no answer, contact support before leaving. Never just leave without notifying support.”,tip:“Text before calling. Most customers respond to a text faster than a call from an unknown number.”},
-]},
-{e:“💸”,t:“Getting Paid”,free:false,secs:[
-{h:“How and when you get paid”,body:“Most platforms pay once a week, automatically deposited to your bank account. You can also cash out early through Fast Pay or Instant Pay. Go to your app’s Earnings section to set this up.”,tip:“Set up Fast Pay before you need it. The verification takes a day or two and you do not want to wait during a tight week.”},
-{h:“Why some orders pay more than others”,body:“Longer distance means more pay. Harder deliveries mean more pay. Busy times mean more pay. Some orders also have bigger tips already added by the customer. A good rule: if the pay is less than $1 per mile, it may not be worth taking.”,tip:“Calculate pay per mile, not just total pay. A $12 order that is 2 miles beats an $8 order that is 1 mile.”},
-{h:“When tips show up”,body:“Some tips appear immediately after delivery. Others show up hours later because customers add them after they receive the food. Do not be alarmed if a tip is not there right away.”,tip:“Focus on doing great work on every delivery. The tip average across your week tells the real story.”},
-]},
-{e:“🔴”,t:“DoorDash Specifics”,free:false,secs:[
-{h:“How DoorDash orders work”,body:“When an order comes in, you see the pickup restaurant, drop-off address, pay, and distance. You have about 45 seconds to accept or decline. Drive to the restaurant, tap Arrived at Store, pick up, tap Picked Up, drive to customer.”,tip:“If you are unsure about an order, decline it before accepting rather than accepting and unassigning later. Unassigning hurts your completion rate.”},
-{h:“The rating system”,body:“DoorDash shows you your last 100 deliveries as your score. Below 4.2 puts you at risk of deactivation. Above 4.7 keeps you in good standing. You can contact support to request review of a bad rating that was not your fault.”,tip:“Every 100th delivery, your oldest rating drops off and a new one rolls in. A rough patch fades.”},
-{h:“Completion rate”,body:“Your completion rate is the percentage of orders you accept and then actually complete. DoorDash requires a minimum of 80 percent. Only accept orders you are sure you can complete.”,tip:“Low completion rate is one of the fastest paths to deactivation. Accept less if you need to, but finish what you accept.”},
-]},
-{e:“🟢”,t:“Uber Eats Specifics”,free:false,secs:[
-{h:“How Uber Eats orders work”,body:“Go online in the app and orders start coming to you. Accept one and head to the restaurant. For contactless: leave at the door, take a photo through the app, and confirm delivery.”,tip:“The photo submission in Uber Eats is required for contactless. If you skip it, you are unprotected in any dispute.”},
-{h:“Your rating and what affects it”,body:“Uber requires a 4.7 or higher rating. Below that, you may see fewer high-paying trips. Uber allows removal of ratings caused by things outside your control like restaurant errors or navigation problems.”,tip:“Submit a rating review request immediately after any unfair rating. The sooner you submit, the more context is available.”},
-{h:“Trip ID - what it is and why you need it”,body:“Every delivery has a Trip ID. If you ever need to dispute something, you must include the Trip ID. Support cannot find your record without it.”,tip:“Screenshot your Trip ID any time a delivery feels off, before you move to the next one.”},
-]},
-{e:“🔵”,t:“Spark Specifics”,free:false,secs:[
-{h:“What makes Spark different”,body:“Spark is Walmart’s delivery service. Instead of picking up food from a restaurant, you go to a Walmart store and shop for a customer’s grocery order. You scan each item as you pick it up, then deliver the bags.”,tip:“Get familiar with the Walmart store layout you work most. Faster shopping means more batches per hour.”},
-{h:“How to handle out-of-stock items”,body:“Open the Spark app, find the item, and mark it as unavailable. The app gives you options to substitute it with something similar. Always message the customer through the app before you check out.”,tip:“Message before checkout, not after. Once you check out, the customer cannot change their mind about the substitute.”},
-{h:“Why scanning every item matters”,body:“Spark tracks which items you scanned. If a customer says an item is missing and your scan record shows you scanned it, that is your proof. Scan every single item, every time.”,tip:“If a scanner error happens, note it in the app immediately. Do not just move on and hope it resolves.”},
-]},
-{e:“🟩”,t:“Instacart Specifics”,free:false,secs:[
-{h:“What Instacart shoppers actually do”,body:“Instacart pays you to shop for customers at grocery stores, then deliver the bags to their home. The whole thing - shopping and delivering - is called a batch.”,tip:“Read the entire item list before you start shopping. Plan your path through the store. Wandering wastes time and money.”},
-{h:“How to handle replacements”,body:“If an item is not available, the app shows you approved replacements. Before you check out, always message the customer to let them know what you are substituting.”,tip:“When in doubt, message the customer and ask. Customers who feel consulted almost never complain about a replacement.”},
-{h:“The 4.7 rating - why it is the key number”,body:“Instacart shoppers rated below 4.7 see fewer batches and lower-paying ones. Above 4.7 keeps you in good standing. Above 4.8 unlocks premium batches.”,tip:“Protect your rating the way you protect your income - because it is your income.”},
-]},
+var JOKES = [
+  {setup:"Why did Inuyasha cross the road?", punchline:"To get to Kagome's era. Also there was a demon on the other side. Also he just wanted ramen."},
+  {setup:"What does Sesshomaru say at the dinner table?", punchline:"\"I did not come here to eat. I came here to dominate the table setting. ...This soup is acceptable.\""},
+  {setup:"Han Solo walks into a bar.", punchline:"He shoots first. The bartender gives him a drink. Nobody questions it."},
+  {setup:"Why is Kagome an amazing student?", punchline:"She has a time machine and still shows up for the people she loves. Extra credit: unlimited."},
+  {setup:"Inuyasha vs a to-do list:", punchline:"\"I'll WIND SCAR this list!\" *the dishes are still not done* *Kagome sighs*"},
+  {setup:"What's Sesshomaru's morning routine?", punchline:"Wake up. Stare into the middle distance. Contemplate the nature of power. Silently acknowledge that Rin made him breakfast. Never say thank you. Leave. (He appreciates it deeply.)"},
 ];
 
-var QUIZ_QUESTIONS = [
-{q:“How big is your market?”,opts:[“Small town or suburb”,“Medium city”,“Large city or metro”]},
-{q:“How many hours do you drive per week?”,opts:[“Under 10 hours”,“10 to 25 hours”,“25 or more hours”]},
-{q:“What matters most to you?”,opts:[“Flexible schedule”,“Highest pay per hour”,“Account stability”]},
-];
-
-var HABITS_TODAY = [
-“Took a clear photo on every delivery”,
-“Messaged customers before arriving”,
-“Checked all delivery instructions”,
-“Kept GPS on the whole shift”,
-“Handled every bag with care”,
-“Noted order ID on any problem delivery”
-];
-
-// – COMPONENTS –––––––––––––––––––––––––––––
-
-function Toast(props) {
-var msg = props.msg;
-var onDone = props.onDone;
-var s = useState(false);
-var out = s[0]; var setOut = s[1];
-useEffect(function() {
-var t1 = setTimeout(function(){ setOut(true); }, 1600);
-var t2 = setTimeout(onDone, 2000);
-return function(){ clearTimeout(t1); clearTimeout(t2); };
-}, []);
-return (
-<div style={{position:“fixed”,top:“50%”,left:“50%”,
-transform:“translate(-50%,-50%)”,zIndex:999,pointerEvents:“none”,
-background:“rgba(48,209,88,0.95)”,borderRadius:16,padding:“13px 22px”,
-fontSize:14,fontWeight:800,color:”#000”,
-animation:out?“toastOut 0.4s ease forwards”:“toastIn 0.3s ease forwards”,
-boxShadow:“0 8px 32px rgba(48,209,88,0.4)”,whiteSpace:“nowrap”}}>
-{“Copied!”}
-</div>
-);
+function Stars() {
+  var items = [];
+  for (var i = 0; i < 40; i++) {
+    var size = Math.random() * 2.5 + 1;
+    items.push(
+      React.createElement('div', {
+        key: i, className: 'star',
+        style: {width:size+'px',height:size+'px',left:Math.random()*100+'vw',top:Math.random()*100+'vh',
+          '--dur':(2+Math.random()*4)+'s','--del':(Math.random()*4)+'s',opacity:0.3+Math.random()*0.5}
+      })
+    );
+  }
+  return React.createElement('div', null, items);
 }
 
-function Card(props) {
-return (
-<div style={Object.assign({background:S1,border:“1px solid “+BDR,borderRadius:16,marginBottom:10,overflow:“hidden”},props.style||{})}>
-{props.children}
-</div>
-);
-}
-
-function PlatformPill(props) {
-var pl = props.pl;
-var active = props.active;
-var onClick = props.onClick;
-return (
-<button onClick={onClick} style={{flexShrink:0,background:active?“rgba(191,90,242,0.15)”:S1,
-border:“1px solid “+(active?“rgba(191,90,242,0.5)”:BDR),borderRadius:20,
-padding:“7px 13px”,fontSize:13,fontWeight:700,
-color:active?P:TXT2,fontFamily:“inherit”}}>
-{pl.e + “ “ + pl.label}
-</button>
-);
-}
-
-function Paywall(props) {
-var onUnlock = props.onUnlock;
-var feature = props.feature || “Unlock full access for $10”;
-return (
-<div onClick={onUnlock} style={{background:“rgba(255,159,10,0.06)”,
-border:“1px solid rgba(255,159,10,0.2)”,borderRadius:14,padding:“14px 16px”,
-display:“flex”,alignItems:“center”,gap:12,cursor:“pointer”,marginTop:8}}>
-<div style={{fontSize:22}}>{“🔒”}</div>
-<div style={{flex:1}}>
-<div style={{fontSize:13,fontWeight:800,color:A}}>{“Elite Only”}</div>
-<div style={{fontSize:12,color:TXT3,marginTop:1}}>{feature}</div>
-</div>
-<div style={{fontSize:12,fontWeight:800,color:A,background:“rgba(255,159,10,0.12)”,
-border:“1px solid rgba(255,159,10,0.25)”,borderRadius:20,padding:“5px 12px”}}>
-{”$10”}
-</div>
-</div>
-);
-}
-
-function SectionHead(props) {
-var e = props.e; var title = props.title; var sub = props.sub; var color = props.color || A;
-return (
-<div style={{marginBottom:18}}>
-<div style={{display:“flex”,alignItems:“center”,gap:10,marginBottom:4}}>
-<div style={{width:34,height:34,borderRadius:10,background:color+“20”,
-border:“1px solid “+color+“35”,display:“flex”,alignItems:“center”,
-justifyContent:“center”,fontSize:18}}>{e}</div>
-<div style={{fontSize:20,fontWeight:900,color:TXT,letterSpacing:”-0.5px”}}>{title}</div>
-</div>
-{sub && <div style={{fontSize:13,color:TXT2,lineHeight:1.5,paddingLeft:44}}>{sub}</div>}
-</div>
-);
-}
-
-// – TABS ––––––––––––––––––––––––––––––––
-
-function TipsTab(props) {
-var pro = props.pro; var onUnlock = props.onUnlock;
-var exp = useState(null); var expanded = exp[0]; var setExpanded = exp[1];
-var cd = useState(30); var calcDel = cd[0]; var setCalcDel = cd[1];
-return (
-<div className=“tab-in” style={{padding:“24px 16px 8px”}}>
-<div style={{display:“flex”,alignItems:“center”,justifyContent:“space-between”,marginBottom:22}}>
-<div>
-<div style={{fontSize:26,fontWeight:900,letterSpacing:”-1px”,color:A}}>DropPilot</div>
-<div style={{fontSize:11,color:TXT3,letterSpacing:“2px”,fontWeight:700}}>DRIVER COMMAND CENTER</div>
-</div>
-{pro
-? <div style={{background:“rgba(255,159,10,0.12)”,border:“1px solid rgba(255,159,10,0.3)”,borderRadius:20,padding:“5px 12px”,fontSize:12,fontWeight:800,color:A}}>ELITE</div>
-: <button onClick={onUnlock} style={{background:“rgba(255,159,10,0.1)”,border:“1px solid rgba(255,159,10,0.3)”,borderRadius:20,padding:“5px 12px”,fontSize:12,fontWeight:800,color:A,fontFamily:“inherit”}}>Unlock $10</button>
-}
-</div>
-
-  <div style={{background:"rgba(255,159,10,0.06)",border:"1px solid rgba(255,159,10,0.18)",borderRadius:18,padding:"16px",marginBottom:20}}>
-    <div style={{fontSize:14,fontWeight:800,color:A,marginBottom:3}}>Earnings Calculator</div>
-    <div style={{fontSize:12,color:TXT2,marginBottom:14}}>What does $1 more per delivery add up to?</div>
-    <div style={{display:"flex",justifyContent:"space-between",marginBottom:8}}>
-      <span style={{fontSize:12,color:TXT2}}>Deliveries per week</span>
-      <span style={{fontSize:16,fontWeight:900,color:A}}>{calcDel}</span>
+function HeroSection(props) {
+  return (
+    <div className="fade-up" style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 24px",textAlign:"center",position:"relative",zIndex:1}}>
+      <div className="float" style={{fontSize:72,marginBottom:20}}>🌸</div>
+      <div style={{fontSize:13,fontWeight:700,letterSpacing:"3px",color:"rgba(255,215,0,0.7)",marginBottom:12,textTransform:"uppercase"}}>A message for</div>
+      <div style={{fontSize:52,fontWeight:900,lineHeight:1.1,marginBottom:16}}>
+        <span className="shimmer-text">Hey, Brandon.</span>
+      </div>
+      <div style={{fontSize:18,color:"rgba(255,255,255,0.7)",lineHeight:1.7,maxWidth:340,marginBottom:36}}>
+        Someone made this for you because you matter a lot.<br/>
+        <span style={{color:"rgba(255,215,0,0.9)",fontWeight:700}}>A lot</span> a lot.
+      </div>
+      <button onClick={props.onNext} style={{background:"linear-gradient(135deg,#ffd700,#ff9f0a)",border:"none",borderRadius:50,padding:"15px 36px",fontSize:16,fontWeight:800,color:"#000",boxShadow:"0 8px 30px rgba(255,215,0,0.4)"}}>
+        Let's go ✨
+      </button>
     </div>
-    <input type="range" min={5} max={100} value={calcDel} onChange={function(e){setCalcDel(Number(e.target.value));}} style={{marginBottom:14}}/>
-    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}}>
-      {[["Weekly",calcDel],["Monthly",calcDel*4],["Yearly",calcDel*52]].map(function(item){
+  );
+}
+
+function QuotesSection() {
+  return (
+    <div style={{padding:"24px 18px"}}>
+      <div style={{textAlign:"center",marginBottom:28}}>
+        <div style={{fontSize:13,fontWeight:700,letterSpacing:"3px",color:"rgba(255,215,0,0.7)",marginBottom:8,textTransform:"uppercase"}}>Words that slap</div>
+        <div style={{fontSize:26,fontWeight:900}}>Quotes that are basically about you</div>
+      </div>
+      {HYPE_MESSAGES.map(function(q, i) {
         return (
-          <div key={item[0]} style={{background:"rgba(0,0,0,0.3)",border:"1px solid rgba(255,159,10,0.15)",borderRadius:12,padding:"10px 8px",textAlign:"center"}}>
-            <div style={{fontSize:11,color:TXT3,marginBottom:4}}>{item[0]}</div>
-            <div style={{fontSize:18,fontWeight:900,color:A}}>{"$"+item[1]}</div>
-            <div style={{fontSize:10,color:TXT3,marginTop:2}}>extra</div>
+          <div key={i} className="pop-in" style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,215,0,0.2)",borderRadius:20,padding:"22px 20px",marginBottom:14,animationDelay:(i*0.05)+"s"}}>
+            <div style={{fontSize:28,marginBottom:12}}>{q.e}</div>
+            <div style={{fontSize:15,color:"rgba(255,255,255,0.9)",lineHeight:1.75,fontStyle:"italic",marginBottom:12}}>{q.quote}</div>
+            <div style={{fontSize:11,fontWeight:700,color:"rgba(255,215,0,0.6)",letterSpacing:"1.5px",marginBottom:8,textTransform:"uppercase"}}>— {q.char}</div>
+            <div style={{fontSize:13,color:"rgba(255,255,255,0.55)",lineHeight:1.6,borderLeft:"2px solid rgba(255,215,0,0.3)",paddingLeft:12}}>{q.vibe}</div>
           </div>
         );
       })}
     </div>
-  </div>
+  );
+}
 
-  <SectionHead e="⭐" title="Earn More Tips" sub="Habits that raise your rating and your income."/>
-  {ALL_TIPS.map(function(tip, i){
-    var open = expanded === i;
-    return (
-      <div key={i} style={{background:open?"rgba(255,159,10,0.07)":S1,border:"1px solid "+(open?"rgba(255,159,10,0.3)":BDR),borderRadius:16,padding:"14px 15px",marginBottom:10,cursor:"pointer"}}
-        onClick={function(){setExpanded(open?null:i);}}>
-        <div style={{display:"flex",alignItems:"center",gap:12}}>
-          <span style={{fontSize:24,flexShrink:0}}>{tip.e}</span>
-          <div style={{flex:1}}>
-            <div style={{fontSize:14,fontWeight:800,color:TXT}}>{tip.t}</div>
-            {!open && <div style={{fontSize:12,color:TXT2,marginTop:3,lineHeight:1.4}}>{tip.s}</div>}
-          </div>
-          <span style={{color:TXT3,fontSize:14}}>{open?"▲":"▼"}</span>
-        </div>
-        {open && (
-          <div style={{marginTop:12,paddingTop:12,borderTop:"1px solid rgba(255,255,255,0.06)"}}>
-            <div style={{fontSize:13,color:TXT2,lineHeight:1.75}}>{tip.d}</div>
-          </div>
-        )}
+function ReasonsSection() {
+  var revState = useState({});
+  var rev = revState[0]; var setRev = revState[1];
+  function toggle(i) { var n = Object.assign({}, rev); n[i] = !n[i]; setRev(n); }
+  return (
+    <div style={{padding:"24px 18px"}}>
+      <div style={{textAlign:"center",marginBottom:28}}>
+        <div style={{fontSize:13,fontWeight:700,letterSpacing:"3px",color:"rgba(79,195,247,0.8)",marginBottom:8,textTransform:"uppercase"}}>No cap, all facts</div>
+        <div style={{fontSize:26,fontWeight:900}}>10 reasons you're incredible</div>
+        <div style={{fontSize:13,color:"rgba(255,255,255,0.4)",marginTop:6}}>Tap any for a quick hype boost</div>
       </div>
-    );
-  })}
-</div>
-
-);
-}
-
-function ScriptsTab(props) {
-var pro = props.pro; var onUnlock = props.onUnlock;
-var ec = useState(null); var expCat = ec[0]; var setExpCat = ec[1];
-var es = useState(null); var expSec = es[0]; var setExpSec = es[1];
-var ck = useState(null); var copiedKey = ck[0]; var setCopiedKey = ck[1];
-var toast = useState(false); var showToast = toast[0]; var setShowToast = toast[1];
-
-function copyText(text, key) {
-try { navigator.clipboard.writeText(text); } catch(e) {
-var el = document.createElement(“textarea”);
-el.value = text; document.body.appendChild(el); el.select();
-document.execCommand(“copy”); document.body.removeChild(el);
-}
-setCopiedKey(key); setShowToast(true);
-setTimeout(function(){ setCopiedKey(null); setShowToast(false); }, 2000);
-}
-
-return (
-<div className=“tab-in” style={{padding:“24px 16px 8px”}}>
-{showToast && <Toast msg="Copied!" onDone={function(){setShowToast(false);}}/>}
-<SectionHead e="💬" title="Message Scripts" sub="Copy and send - word for word." color={B}/>
-{MSG_CATS.map(function(cat, ci){
-var catOpen = expCat === ci;
-return (
-<Card key={ci}>
-<div onClick={function(){setExpCat(catOpen?null:ci); setExpSec(null);}} style={{padding:“14px 15px”,display:“flex”,alignItems:“center”,gap:12,cursor:“pointer”}}>
-<span style={{fontSize:22}}>{cat.e}</span>
-<div style={{flex:1}}>
-<div style={{fontSize:14,fontWeight:800,color:TXT}}>{cat.t}</div>
-<div style={{fontSize:12,color:TXT2}}>{cat.sub}</div>
-</div>
-<span style={{color:TXT3}}>{catOpen?“▲”:“▼”}</span>
-</div>
-{catOpen && (
-<div style={{borderTop:“1px solid rgba(255,255,255,0.06)”}}>
-{cat.secs.map(function(sec, si){
-var key = ci+”-”+si;
-var secOpen = expSec === key;
-return (
-<div key={si} style={{borderBottom:si<cat.secs.length-1?“1px solid rgba(255,255,255,0.04)”:“none”}}>
-<div onClick={function(){setExpSec(secOpen?null:key);}} style={{padding:“12px 15px”,display:“flex”,alignItems:“center”,gap:10,cursor:“pointer”,background:secOpen?“rgba(10,132,255,0.07)”:“transparent”}}>
-<div style={{flex:1,fontSize:13,fontWeight:700,color:secOpen?B:TXT}}>{sec.h}</div>
-<span style={{color:TXT3}}>{secOpen?“▲”:“▼”}</span>
-</div>
-{secOpen && (
-<div style={{padding:“4px 15px 14px”}}>
-{sec.caution && <div style={{background:“rgba(255,69,58,0.08)”,border:“1px solid rgba(255,69,58,0.25)”,borderRadius:10,padding:“8px 12px”,marginBottom:8}}>
-<div style={{fontSize:12,fontWeight:800,color:R}}>DO NOT SAY</div>
-</div>}
-<div style={{background:sec.caution?“rgba(255,69,58,0.06)”:“rgba(10,132,255,0.07)”,border:“1px solid “+(sec.caution?“rgba(255,69,58,0.2)”:“rgba(10,132,255,0.18)”),borderRadius:12,padding:“12px 14px”,marginBottom:8}}>
-<div style={{fontSize:13,color:“rgba(255,255,255,0.85)”,lineHeight:1.7,whiteSpace:“pre-wrap”}}>{sec.msg}</div>
-</div>
-{!sec.caution && (
-<button onClick={function(){copyText(sec.msg, key);}} style={{background:copiedKey===key?“rgba(48,209,88,0.12)”:“rgba(10,132,255,0.1)”,border:“1px solid “+(copiedKey===key?“rgba(48,209,88,0.3)”:“rgba(10,132,255,0.25)”),borderRadius:10,padding:“8px 16px”,fontSize:13,fontWeight:700,color:copiedKey===key?G:B,width:“100%”,marginBottom:8,fontFamily:“inherit”}}>
-{copiedKey===key ? “Copied!” : “Copy Message”}
-</button>
-)}
-{sec.w && <div style={{fontSize:12,color:TXT3,lineHeight:1.6,fontStyle:“italic”,borderLeft:“2px solid rgba(10,132,255,0.3)”,paddingLeft:10}}>{sec.w}</div>}
-</div>
-)}
-</div>
-);
-})}
-</div>
-)}
-</Card>
-);
-})}
-</div>
-);
-}
-
-function BasicsTab(props) {
-var pro = props.pro; var onUnlock = props.onUnlock;
-var ec = useState(null); var expCat = ec[0]; var setExpCat = ec[1];
-var es = useState(null); var expSec = es[0]; var setExpSec = es[1];
-return (
-<div className=“tab-in” style={{padding:“24px 16px 8px”}}>
-<SectionHead e="📖" title="The Basics" sub="Everything explained from scratch." color={T}/>
-{BASICS.map(function(cat, ci){
-var locked = !cat.free && !pro;
-var catOpen = expCat === ci;
-return (
-<Card key={ci}>
-<div onClick={function(){locked ? onUnlock() : setExpCat(catOpen?null:ci);}} style={{padding:“14px 15px”,display:“flex”,alignItems:“center”,gap:12,cursor:“pointer”}}>
-<span style={{fontSize:22}}>{cat.e}</span>
-<div style={{flex:1}}>
-<div style={{fontSize:14,fontWeight:800,color:TXT}}>{cat.t}</div>
-</div>
-<span style={{fontSize:16}}>{locked?“🔒”:(catOpen?“▲”:“▼”)}</span>
-</div>
-{locked && (
-<div style={{padding:“0 15px 12px”}}>
-<Paywall onUnlock={onUnlock} feature="Unlock all basics content"/>
-</div>
-)}
-{!locked && catOpen && (
-<div style={{borderTop:“1px solid rgba(255,255,255,0.06)”}}>
-{cat.secs.map(function(sec, si){
-var key = ci+”-”+si;
-var secOpen = expSec === key;
-return (
-<div key={si} style={{borderBottom:si<cat.secs.length-1?“1px solid rgba(255,255,255,0.04)”:“none”}}>
-<div onClick={function(){setExpSec(secOpen?null:key);}} style={{padding:“12px 15px”,display:“flex”,alignItems:“center”,gap:10,cursor:“pointer”,background:secOpen?“rgba(90,200,250,0.06)”:“transparent”}}>
-<div style={{flex:1,fontSize:13,fontWeight:700,color:secOpen?T:TXT}}>{sec.h}</div>
-<span style={{color:TXT3}}>{secOpen?“▲”:“▼”}</span>
-</div>
-{secOpen && (
-<div style={{padding:“4px 15px 14px”}}>
-<div style={{fontSize:13,color:TXT2,lineHeight:1.75,marginBottom:sec.tip?10:0}}>{sec.body}</div>
-{sec.tip && (
-<div style={{background:“rgba(90,200,250,0.07)”,border:“1px solid rgba(90,200,250,0.2)”,borderRadius:10,padding:“10px 13px”}}>
-<div style={{fontSize:11,fontWeight:800,color:T,letterSpacing:1,marginBottom:4}}>TIP</div>
-<div style={{fontSize:12,color:“rgba(255,255,255,0.7)”,lineHeight:1.6}}>{sec.tip}</div>
-</div>
-)}
-</div>
-)}
-</div>
-);
-})}
-</div>
-)}
-</Card>
-);
-})}
-</div>
-);
-}
-
-function DefendTab(props) {
-var pro = props.pro; var onUnlock = props.onUnlock;
-var pp = useState(“doordash”); var platform = pp[0]; var setPlatform = pp[1];
-var ss = useState(“habits”); var section = ss[0]; var setSection = ss[1];
-var ea = useState(null); var expAppeal = ea[0]; var setExpAppeal = ea[1];
-var ck = useState(null); var copiedKey = ck[0]; var setCopiedKey = ck[1];
-var toast = useState(false); var showToast = toast[0]; var setShowToast = toast[1];
-
-function copyText(text, key) {
-try { navigator.clipboard.writeText(text); } catch(e) {
-var el = document.createElement(“textarea”);
-el.value = text; document.body.appendChild(el); el.select();
-document.execCommand(“copy”); document.body.removeChild(el);
-}
-setCopiedKey(key); setShowToast(true);
-setTimeout(function(){ setCopiedKey(null); setShowToast(false); }, 2000);
-}
-
-var habits = HABITS[platform] || [];
-var appeals = APPEALS[platform] || [];
-var checklist = CHECKLIST[platform] || [];
-
-return (
-<div className=“tab-in” style={{padding:“24px 16px 8px”}}>
-{showToast && <Toast msg="Copied!" onDone={function(){setShowToast(false);}}/>}
-<SectionHead e="🛡️" title="Account Defense" sub="Protect your account when things go wrong." color={P}/>
-
-  <div style={{display:"flex",gap:6,marginBottom:14,overflowX:"auto",paddingBottom:4}}>
-    {PLATFORMS.map(function(pl){
-      return <PlatformPill key={pl.id} pl={pl} active={platform===pl.id} onClick={function(){setPlatform(pl.id); setExpAppeal(null);}}/>;
-    })}
-  </div>
-
-  <div style={{display:"flex",gap:6,marginBottom:18}}>
-    {[["habits","Habits"],["appeals","Appeals"],["checklist","Checklist"]].map(function(item){
-      var id=item[0]; var label=item[1];
-      return (
-        <button key={id} onClick={function(){setSection(id);}} style={{flex:1,background:section===id?"rgba(191,90,242,0.15)":S1,border:"1px solid "+(section===id?"rgba(191,90,242,0.5)":BDR),borderRadius:12,padding:"9px 8px",fontSize:12,fontWeight:800,color:section===id?P:TXT2,fontFamily:"inherit"}}>{label}</button>
-      );
-    })}
-  </div>
-
-  {section==="habits" && habits.map(function(h, i){
-    return (
-      <div key={i} style={{background:h.urgent?"rgba(191,90,242,0.06)":S1,border:"1px solid "+(h.urgent?"rgba(191,90,242,0.25)":BDR),borderRadius:14,padding:"13px 14px",marginBottom:9,display:"flex",gap:12,alignItems:"flex-start"}}>
-        <div style={{width:36,height:36,borderRadius:10,background:h.urgent?"rgba(191,90,242,0.15)":"rgba(255,255,255,0.05)",border:"1px solid "+(h.urgent?"rgba(191,90,242,0.3)":BDR),display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,flexShrink:0}}>{h.e}</div>
-        <div style={{flex:1}}>
-          <div style={{display:"flex",alignItems:"center",gap:7,marginBottom:3}}>
-            <div style={{fontSize:13,fontWeight:800,color:h.urgent?P:TXT}}>{h.t}</div>
-            {h.urgent && <div style={{fontSize:10,fontWeight:800,color:P,background:"rgba(191,90,242,0.15)",borderRadius:6,padding:"2px 6px",flexShrink:0}}>URGENT</div>}
-          </div>
-          <div style={{fontSize:12,color:TXT2,lineHeight:1.6}}>{h.why}</div>
-        </div>
-      </div>
-    );
-  })}
-
-  {section==="appeals" && (
-    <div>
-      {!pro && <Paywall onUnlock={onUnlock} feature="Full appeal scripts for every platform"/>}
-      {pro && appeals.map(function(ap, ai){
-        var open = expAppeal === ai;
-        return (
-          <Card key={ai}>
-            <div onClick={function(){setExpAppeal(open?null:ai);}} style={{padding:"14px 15px",display:"flex",alignItems:"center",gap:12,cursor:"pointer"}}>
-              <span style={{fontSize:22}}>{ap.e}</span>
-              <div style={{flex:1}}>
-                <div style={{fontSize:13,fontWeight:800,color:TXT}}>{ap.t}</div>
-                <div style={{fontSize:11,fontWeight:700,color:ap.color,marginTop:2}}>{ap.urgency}</div>
-              </div>
-              <span style={{color:TXT3}}>{open?"▲":"▼"}</span>
-            </div>
-            {open && (
-              <div style={{borderTop:"1px solid rgba(255,255,255,0.06)",padding:"14px 15px"}}>
-                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:14}}>
-                  {[["24-48hrs","First response usually within 24-48 hours","#5AC8FA"],["If approved","Account standing restored, complaint removed","#30D158"],["If denied","Submit second appeal citing specific evidence","#FF9F0A"],["Build record","Screenshot confirmations to strengthen future appeals","#BF5AF2"]].map(function(item){
-                    return (
-                      <div key={item[0]} style={{background:item[2]+"0A",border:"1px solid "+item[2]+"20",borderRadius:10,padding:"9px 10px"}}>
-                        <div style={{fontSize:11,fontWeight:800,color:item[2],marginBottom:3}}>{item[0]}</div>
-                        <div style={{fontSize:11,color:TXT2,lineHeight:1.5}}>{item[1]}</div>
-                      </div>
-                    );
-                  })}
-                </div>
-                <div style={{background:"rgba(191,90,242,0.07)",border:"1px solid rgba(191,90,242,0.2)",borderRadius:12,padding:"12px 14px",marginBottom:10}}>
-                  <div style={{fontSize:13,color:"rgba(255,255,255,0.85)",lineHeight:1.75,whiteSpace:"pre-wrap"}}>{ap.msg}</div>
-                </div>
-                <button onClick={function(){copyText(ap.msg, ai);}} style={{background:copiedKey===ai?"rgba(48,209,88,0.12)":"rgba(191,90,242,0.1)",border:"1px solid "+(copiedKey===ai?"rgba(48,209,88,0.3)":"rgba(191,90,242,0.25)"),borderRadius:10,padding:"9px 16px",fontSize:13,fontWeight:700,color:copiedKey===ai?G:P,width:"100%",marginBottom:10,fontFamily:"inherit"}}>
-                  {copiedKey===ai ? "Copied!" : "Copy Script"}
-                </button>
-                {ap.why && <div style={{fontSize:12,color:TXT3,lineHeight:1.6,fontStyle:"italic",borderLeft:"2px solid rgba(191,90,242,0.3)",paddingLeft:10}}>{ap.why}</div>}
-              </div>
-            )}
-          </Card>
-        );
-      })}
-    </div>
-  )}
-
-  {section==="checklist" && checklist.map(function(item, i){
-    return (
-      <div key={i} style={{background:S1,border:"1px solid "+BDR,borderRadius:14,padding:"13px 15px",marginBottom:9,display:"flex",alignItems:"center",gap:12}}>
-        <div style={{width:22,height:22,borderRadius:"50%",border:"1px solid rgba(191,90,242,0.4)",background:"rgba(191,90,242,0.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,flexShrink:0,color:P}}>{"✓"}</div>
-        <span style={{fontSize:13,color:TXT,lineHeight:1.5}}>{item.t}</span>
-      </div>
-    );
-  })}
-</div>
-
-);
-}
-
-function TodayTab(props) {
-var checks = props.checks;
-var onToggle = props.onToggle;
-var streak = props.streak;
-var quizResult = props.quizResult;
-var onQuizResult = props.onQuizResult;
-
-var qs = useState(0); var quizStep = qs[0]; var setQuizStep = qs[1];
-var qa = useState({}); var quizAns = qa[0]; var setQuizAns = qa[1];
-
-var checkCount = 0;
-for (var k in checks) { if (checks[k]) checkCount++; }
-
-function calcResult(ans) {
-var prio = ans[2]; var city = ans[0]; var hrs = ans[1];
-if (prio === “Account stability”) return {platform:“Amazon Flex”,e:“📦”,color:”#FF9900”,reason:“Amazon Flex has predictable scheduled blocks and clear return policies. If protecting your standing is the top priority, blocks give you control.”,tip:“Always photo every package and note your Block ID on any problem delivery.”};
-if (city === “Large city or metro” && prio === “Highest pay per hour”) return {platform:“DoorDash”,e:“🔴”,color:”#FF3008”,reason:“In large markets, DoorDash volume is highest during peak hours. Stacking with Uber Eats during slow periods maximizes your hourly rate.”,tip:“Use DoorDash as your primary and flip to Uber Eats during DoorDash slow periods.”};
-if (city === “Small town or suburb”) return {platform:“Spark”,e:“🔵”,color:”#0071CE”,reason:“In smaller markets, grocery delivery through Spark often has less competition and more consistent batch availability than restaurant apps.”,tip:“Scan every item at the store. Your scan record is your best protection.”};
-if (hrs === “25 or more hours”) return {platform:“Instacart”,e:“🟩”,color:”#43B02A”,reason:“For full-time drivers, Instacart grocery batches often pay more per hour than restaurant delivery once you factor in tip potential.”,tip:“Keep your rating above 4.7 to access the highest-paying batches.”};
-return {platform:“Uber Eats”,e:“🟢”,color:”#06C167”,reason:“Uber Eats works well across market sizes and schedule flexibility. A solid starting platform for building habits and rating.”,tip:“Always message customers in-app, never by SMS.”};
-}
-
-return (
-<div className=“tab-in” style={{padding:“24px 16px 8px”}}>
-<SectionHead e="📅" title="Today" sub="Track your daily habits and find your best platform." color={G}/>
-
-  <div style={{background:"rgba(48,209,88,0.06)",border:"1px solid rgba(48,209,88,0.2)",borderRadius:18,padding:"16px",marginBottom:18}}>
-    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
-      <div>
-        <div style={{fontSize:14,fontWeight:800,color:G}}>Daily Streak</div>
-        <div style={{fontSize:12,color:TXT2}}>Complete all 6 habits to extend your streak</div>
-      </div>
-      <div style={{textAlign:"center"}}>
-        <div style={{fontSize:32,fontWeight:900,color:G,lineHeight:1}}>{streak.count}</div>
-        <div style={{fontSize:11,color:TXT3}}>{streak.count===1?"day":"days"}</div>
-      </div>
-    </div>
-    <div style={{display:"flex",gap:4,marginBottom:14}}>
-      {[0,1,2,3,4,5,6].map(function(i){
-        return <div key={i} style={{flex:1,height:6,borderRadius:99,background:i<streak.history.length?G:"rgba(255,255,255,0.08)"}}/>;
-      })}
-    </div>
-    <div style={{display:"flex",justifyContent:"space-between",marginBottom:10}}>
-      <span style={{fontSize:13,fontWeight:700,color:TXT2}}>{checkCount + "/6 habits today"}</span>
-      {checkCount===6 && <span style={{fontSize:13,fontWeight:800,color:G}}>All done!</span>}
-    </div>
-    {HABITS_TODAY.map(function(h, i){
-      var checked = !!checks[i];
-      return (
-        <div key={i} onClick={function(){onToggle(i);}} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 13px",marginBottom:7,background:checked?"rgba(48,209,88,0.08)":"rgba(255,255,255,0.04)",border:"1px solid "+(checked?"rgba(48,209,88,0.3)":"rgba(255,255,255,0.07)"),borderRadius:12,cursor:"pointer"}}>
-          <div style={{width:22,height:22,borderRadius:6,border:"1.5px solid "+(checked?G:"rgba(255,255,255,0.2)"),background:checked?G:"transparent",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-            {checked && <span style={{fontSize:13,color:"#000",fontWeight:900}}>{"✓"}</span>}
-          </div>
-          <span style={{fontSize:13,color:checked?G:TXT2,fontWeight:checked?700:400}}>{h}</span>
-        </div>
-      );
-    })}
-  </div>
-
-  <div style={{background:"rgba(10,132,255,0.06)",border:"1px solid rgba(10,132,255,0.2)",borderRadius:18,padding:"16px"}}>
-    <div style={{fontSize:14,fontWeight:800,color:B,marginBottom:3}}>Platform Finder Quiz</div>
-    <div style={{fontSize:12,color:TXT2,marginBottom:14}}>3 questions to find your best platform</div>
-    {quizResult === null && quizStep < 3 && (
-      <div>
-        <div style={{fontSize:13,fontWeight:700,color:TXT,marginBottom:12}}>{"Q"+(quizStep+1)+": "+QUIZ_QUESTIONS[quizStep].q}</div>
-        {QUIZ_QUESTIONS[quizStep].opts.map(function(opt, i){
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+        {REASONS.map(function(r, i) {
+          var open = !!rev[i];
           return (
-            <button key={i} onClick={function(){
-              var na = Object.assign({}, quizAns);
-              na[quizStep] = opt;
-              setQuizAns(na);
-              if (quizStep < 2) { setQuizStep(quizStep+1); }
-              else { onQuizResult(calcResult(na)); lsSet("dp3-quiz", na); }
-            }} style={{display:"block",width:"100%",background:"rgba(10,132,255,0.08)",border:"1px solid rgba(10,132,255,0.2)",borderRadius:12,padding:"11px 14px",fontSize:13,fontWeight:600,color:TXT,marginBottom:8,textAlign:"left",fontFamily:"inherit"}}>{opt}</button>
+            <div key={i} onClick={function(){toggle(i);}} style={{background:open?"rgba(79,195,247,0.1)":"rgba(255,255,255,0.04)",border:"1px solid "+(open?"rgba(79,195,247,0.4)":"rgba(255,255,255,0.08)"),borderRadius:16,padding:"16px 14px",cursor:"pointer",transition:"all 0.2s"}}>
+              <div style={{fontSize:28,marginBottom:8}}>{r.e}</div>
+              <div style={{fontSize:12,fontWeight:700,color:open?"#4fc3f7":"rgba(255,255,255,0.8)",lineHeight:1.4}}>{r.t}</div>
+              {open && <div style={{fontSize:11,color:"rgba(79,195,247,0.6)",marginTop:6}}>✓ confirmed</div>}
+            </div>
           );
         })}
-        {quizStep > 0 && <button onClick={function(){setQuizStep(quizStep-1);}} style={{background:"transparent",border:"none",color:TXT3,fontSize:12,cursor:"pointer",marginTop:6,fontFamily:"inherit"}}>Back</button>}
       </div>
-    )}
-    {quizResult !== null && (
-      <div>
-        <div style={{background:quizResult.color+"10",border:"1px solid "+quizResult.color+"30",borderRadius:14,padding:"14px",marginBottom:12}}>
-          <div style={{fontSize:12,fontWeight:800,color:quizResult.color,letterSpacing:1,marginBottom:6}}>BEST PLATFORM FOR YOU</div>
-          <div style={{fontSize:22,fontWeight:900,color:TXT,marginBottom:8}}>{quizResult.e+" "+quizResult.platform}</div>
-          <div style={{fontSize:13,color:TXT2,lineHeight:1.65,marginBottom:10}}>{quizResult.reason}</div>
-          <div style={{background:"rgba(255,255,255,0.05)",borderRadius:10,padding:"10px 12px"}}>
-            <div style={{fontSize:11,fontWeight:800,color:quizResult.color,marginBottom:3}}>TIP</div>
-            <div style={{fontSize:12,color:TXT3,lineHeight:1.6}}>{quizResult.tip}</div>
-          </div>
+    </div>
+  );
+}
+
+function AffirmationSection() {
+  var idxS = useState(0); var idx = idxS[0]; var setIdx = idxS[1];
+  var keyS = useState(0); var animKey = keyS[0]; var setAnimKey = keyS[1];
+  function go(dir) { setIdx(function(i){ return (i + dir + AFFIRMATIONS.length) % AFFIRMATIONS.length; }); setAnimKey(function(k){ return k+1; }); }
+  return (
+    <div style={{padding:"24px 18px"}}>
+      <div style={{textAlign:"center",marginBottom:28}}>
+        <div style={{fontSize:13,fontWeight:700,letterSpacing:"3px",color:"rgba(191,90,242,0.8)",marginBottom:8,textTransform:"uppercase"}}>Daily hype drop</div>
+        <div style={{fontSize:26,fontWeight:900}}>Things you need to hear</div>
+      </div>
+      <div style={{background:"rgba(191,90,242,0.07)",border:"1px solid rgba(191,90,242,0.25)",borderRadius:22,padding:"30px 24px",textAlign:"center",marginBottom:16,minHeight:140,display:"flex",alignItems:"center",justifyContent:"center"}}>
+        <div key={animKey} className="fade-up" style={{fontSize:17,fontWeight:700,lineHeight:1.7,color:"rgba(255,255,255,0.95)"}}>
+          {AFFIRMATIONS[idx]}
         </div>
-        <button onClick={function(){onQuizResult(null); setQuizStep(0); setQuizAns({});}} style={{background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:10,padding:"9px 16px",fontSize:12,fontWeight:700,color:TXT2,width:"100%",fontFamily:"inherit"}}>Retake Quiz</button>
       </div>
-    )}
-  </div>
-</div>
-
-);
+      <div style={{display:"flex",gap:10}}>
+        <button onClick={function(){go(-1);}} style={{flex:1,background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:14,padding:"12px",fontSize:14,fontWeight:700,color:"rgba(255,255,255,0.6)"}}>← Previous</button>
+        <button onClick={function(){go(1);}} style={{flex:1,background:"rgba(191,90,242,0.15)",border:"1px solid rgba(191,90,242,0.4)",borderRadius:14,padding:"12px",fontSize:14,fontWeight:800,color:"#bf5af2"}}>Next one →</button>
+      </div>
+      <div style={{textAlign:"center",marginTop:10,fontSize:12,color:"rgba(255,255,255,0.25)"}}>{idx+1} / {AFFIRMATIONS.length}</div>
+    </div>
+  );
 }
 
-function TrainTab(props) {
-var pro = props.pro; var onUnlock = props.onUnlock;
-var videos = [
-{e:“📈”,title:“Why Customer Service Makes You More Money”,desc:“The simple math of $1 more per delivery adding up fast.”,color:G},
-{e:“💬”,title:“Why the Words You Choose Actually Matter”,desc:“Simple psychology behind exact words that earn more tips.”,color:B},
-{e:“🏆”,title:“What Top Earners Do Differently”,desc:“The 60-second habit gap between average and top earners.”,color:A},
-{e:“🙏”,title:“Please, Thank You, and You’re Welcome”,desc:“Three phrases backed by real research that increase tips.”,color:P},
-];
-return (
-<div className=“tab-in” style={{padding:“24px 16px 8px”}}>
-<SectionHead e="🎓" title="Training" sub="Short lessons on what actually earns more money." color={A}/>
-{!pro && <Paywall onUnlock={onUnlock} feature="Unlock all training videos"/>}
-{videos.map(function(v, i){
-return (
-<div key={i} style={{background:S1,border:“1px solid “+BDR,borderRadius:16,marginBottom:12,padding:“14px 15px”,display:“flex”,alignItems:“center”,gap:12,opacity:pro?1:0.5}}>
-<div style={{width:44,height:44,borderRadius:12,background:v.color+“15”,border:“1px solid “+v.color+“30”,display:“flex”,alignItems:“center”,justifyContent:“center”,fontSize:22,flexShrink:0}}>{v.e}</div>
-<div style={{flex:1}}>
-<div style={{fontSize:14,fontWeight:800,color:TXT}}>{v.title}</div>
-<div style={{fontSize:12,color:TXT3,marginTop:2}}>{v.desc}</div>
-</div>
-<span style={{color:pro?v.color:TXT3,fontSize:16}}>{pro?“▶”:“🔒”}</span>
-</div>
-);
-})}
-{pro && <div style={{background:“rgba(255,159,10,0.06)”,border:“1px solid rgba(255,159,10,0.2)”,borderRadius:14,padding:“16px”,textAlign:“center”}}>
-<div style={{fontSize:14,fontWeight:800,color:A,marginBottom:4}}>Video content coming soon</div>
-<div style={{fontSize:12,color:TXT2}}>Animated training videos are in production. Elite members get them automatically when they launch.</div>
-</div>}
-</div>
-);
-}
-
-// – MAIN APP ———————————————————––
-
-function App() {
-var tabState = useState(“tips”); var tab = tabState[0]; var setTab = tabState[1];
-var proState = useState(function(){ return lsGet(“dp3-pro”, false); });
-var pro = proState[0]; var setPro = proState[1];
-var payState = useState(false); var showPay = payState[0]; var setShowPay = payState[1];
-var payStepState = useState(“offer”); var payStep = payStepState[0]; var setPayStep = payStepState[1];
-var settingsState = useState(false); var showSettings = settingsState[0]; var setShowSettings = settingsState[1];
-var codeState = useState(””); var codeInput = codeState[0]; var setCodeInput = codeState[1];
-var codeErrState = useState(false); var codeErr = codeErrState[0]; var setCodeErr = codeErrState[1];
-var tapState = useState(0); var tapCount = tapState[0]; var setTapCount = tapState[1];
-var faqState = useState(null); var faqOpen = faqState[0]; var setFaqOpen = faqState[1];
-
-var checksKey = “dp3-today-” + todayKey();
-var checksState = useState(function(){ return lsGet(checksKey, {}); });
-var checks = checksState[0]; var setChecks = checksState[1];
-
-var streakState = useState(function(){ return lsGet(“dp3-streak”, {count:0,lastDate:null,history:[]}); });
-var streak = streakState[0]; var setStreak = streakState[1];
-
-var quizState = useState(null); var quizResult = quizState[0]; var setQuizResult = quizState[1];
-
-function handleToggle(i) {
-var nc = Object.assign({}, checks);
-nc[i] = !nc[i];
-setChecks(nc);
-lsSet(checksKey, nc);
-var count = 0;
-for (var k in nc) { if (nc[k]) count++; }
-if (count === 6) {
-var today = todayKey();
-if (streak.lastDate !== today) {
-var yesterday = yesterdayKey();
-var newCount = streak.lastDate === yesterday ? streak.count + 1 : 1;
-var newHist = streak.history.slice(-6);
-newHist.push(today);
-var ns = {count:newCount, lastDate:today, history:newHist};
-setStreak(ns);
-lsSet(“dp3-streak”, ns);
-}
-}
-}
-
-function handleTap() {
-var n = tapCount + 1;
-setTapCount(n);
-if (n >= 5) { setShowSettings(true); setTapCount(0); }
-}
-
-function tryCode() {
-if (codeInput.trim() === UNLOCK_CODE) {
-setPro(true); lsSet(“dp3-pro”, true);
-setShowPay(false); setShowSettings(false);
-} else {
-setCodeErr(true); setTimeout(function(){ setCodeErr(false); }, 1400);
-}
-}
-
-function openPay() { setShowPay(true); setPayStep(“offer”); }
-
-var NAV = [
-{id:“tips”,e:“⭐”,label:“Earn”,color:A},
-{id:“scripts”,e:“💬”,label:“Scripts”,color:B},
-{id:“basics”,e:“📖”,label:“Basics”,color:T},
-{id:“defend”,e:“🛡️”,label:“Defend”,color:P},
-{id:“today”,e:“📅”,label:“Today”,color:G},
-{id:“train”,e:“🎓”,label:“Train”,color:A},
-];
-
-var FAQ = [
-{q:“Is this a subscription?”,a:“No. One payment of $10. No recurring charges, ever.”},
-{q:“How do I get my code?”,a:“After payment you’ll see your unlock code on the confirmation page. Enter it in Settings (tap the DropPilot title 5 times).”},
-{q:“Does it work for all platforms?”,a:“Yes. DoorDash, Uber Eats, Spark, Instacart, and Amazon Flex.”},
-{q:“Is there a guarantee?”,a:“If you follow the habits in this app and don’t earn more, contact support for a full refund.”},
-{q:“I lost my code. Help?”,a:“Email support with your Stripe receipt and we will resend your code same day.”},
-];
-
-return (
-<div style={{maxWidth:430,margin:“0 auto”,height:“100%”,display:“flex”,flexDirection:“column”,background:”#000”,color:TXT,position:“relative”}}>
-
-  <div style={{flex:1,overflowY:"auto",paddingBottom:76}}>
-    {tab==="tips" && <TipsTab pro={pro} onUnlock={openPay}/>}
-    {tab==="scripts" && <ScriptsTab pro={pro} onUnlock={openPay}/>}
-    {tab==="basics" && <BasicsTab pro={pro} onUnlock={openPay}/>}
-    {tab==="defend" && <DefendTab pro={pro} onUnlock={openPay}/>}
-    {tab==="today" && <TodayTab checks={checks} onToggle={handleToggle} streak={streak} quizResult={quizResult} onQuizResult={setQuizResult}/>}
-    {tab==="train" && <TrainTab pro={pro} onUnlock={openPay}/>}
-  </div>
-
-  <div style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:430,background:"rgba(0,0,0,0.9)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",borderTop:"1px solid rgba(255,255,255,0.07)",padding:"6px 0 8px",zIndex:100}}>
-    <div style={{display:"flex",justifyContent:"space-around"}}>
-      {NAV.map(function(n){
-        var active = tab === n.id;
+function JokesSection() {
+  var openS = useState(null); var open = openS[0]; var setOpen = openS[1];
+  return (
+    <div style={{padding:"24px 18px"}}>
+      <div style={{textAlign:"center",marginBottom:28}}>
+        <div style={{fontSize:13,fontWeight:700,letterSpacing:"3px",color:"rgba(48,209,88,0.8)",marginBottom:8,textTransform:"uppercase"}}>Certified fresh</div>
+        <div style={{fontSize:26,fontWeight:900}}>Tap to reveal the punchline</div>
+        <div style={{fontSize:13,color:"rgba(255,255,255,0.4)",marginTop:6}}>Warning: these are extremely good</div>
+      </div>
+      {JOKES.map(function(j, i) {
+        var isOpen = open === i;
         return (
-          <button key={n.id} onClick={function(){setTab(n.id);}} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:2,background:"transparent",border:"none",padding:"5px 0",fontFamily:"inherit"}}>
-            <div style={{fontSize:active?22:19}}>{n.e}</div>
-            <div style={{fontSize:10,fontWeight:active?800:500,color:active?n.color:TXT3}}>{n.label}</div>
-            {active && <div style={{width:14,height:2,borderRadius:99,background:n.color,marginTop:1}}/>}
-          </button>
+          <div key={i} onClick={function(){setOpen(isOpen ? null : i);}} style={{background:isOpen?"rgba(48,209,88,0.07)":"rgba(255,255,255,0.04)",border:"1px solid "+(isOpen?"rgba(48,209,88,0.3)":"rgba(255,255,255,0.08)"),borderRadius:18,padding:"18px",marginBottom:12,cursor:"pointer",transition:"all 0.2s"}}>
+            <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
+              <div style={{fontSize:22,flexShrink:0}}>{"😂"}</div>
+              <div style={{flex:1}}>
+                <div style={{fontSize:14,fontWeight:700,color:"rgba(255,255,255,0.9)",lineHeight:1.5,marginBottom:isOpen?12:0}}>{j.setup}</div>
+                {isOpen && <div className="fade-up" style={{fontSize:14,color:"rgba(48,209,88,0.9)",lineHeight:1.6,fontStyle:"italic"}}>{j.punchline}</div>}
+              </div>
+              <div style={{fontSize:16,color:"rgba(255,255,255,0.3)",flexShrink:0,marginTop:2}}>{isOpen?"▲":"▼"}</div>
+            </div>
+          </div>
         );
       })}
     </div>
-  </div>
-
-  {showSettings && (
-    <div onClick={function(e){if(e.target===e.currentTarget)setShowSettings(false);}} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.85)",zIndex:500,display:"flex",alignItems:"flex-end"}}>
-      <div style={{background:"#111",borderRadius:"24px 24px 0 0",width:"100%",maxWidth:430,margin:"0 auto",padding:"24px 20px 40px",borderTop:"1px solid rgba(255,255,255,0.1)"}}>
-        <div style={{fontSize:18,fontWeight:900,marginBottom:16}}>Settings</div>
-        {pro
-          ? <div style={{background:"rgba(48,209,88,0.08)",border:"1px solid rgba(48,209,88,0.25)",borderRadius:14,padding:"13px 15px",marginBottom:16}}>
-              <div style={{fontSize:14,fontWeight:800,color:G}}>Elite Active</div>
-              <div style={{fontSize:12,color:TXT2,marginTop:2}}>Full access unlocked. Thanks for supporting DropPilot.</div>
-            </div>
-          : <div>
-              <div style={{fontSize:13,color:TXT2,marginBottom:10}}>Enter your unlock code:</div>
-              <input value={codeInput} onChange={function(e){setCodeInput(e.target.value);}} placeholder="DROPXXXX" style={{width:"100%",background:"rgba(255,255,255,0.05)",border:"1px solid "+(codeErr?"#FF453A":"rgba(255,255,255,0.12)"),borderRadius:12,padding:"11px 14px",fontSize:15,color:TXT,marginBottom:10}}/>
-              <button onClick={tryCode} style={{width:"100%",background:"linear-gradient(135deg,#FF9F0A,#E8860A)",border:"none",borderRadius:14,padding:"13px",fontSize:15,fontWeight:800,color:"#000",fontFamily:"inherit"}}>Unlock</button>
-            </div>
-        }
-        <button onClick={function(){setShowSettings(false);}} style={{width:"100%",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:14,padding:"12px",fontSize:14,fontWeight:700,color:TXT2,marginTop:10,fontFamily:"inherit"}}>Close</button>
-      </div>
-    </div>
-  )}
-
-  {showPay && (
-    <div onClick={function(e){if(e.target===e.currentTarget)setShowPay(false);}} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.92)",zIndex:500,display:"flex",alignItems:"flex-end"}}>
-      <div style={{background:"#111",borderRadius:"24px 24px 0 0",width:"100%",maxWidth:430,margin:"0 auto",padding:"24px 20px 40px",borderTop:"1px solid rgba(255,159,10,0.25)",maxHeight:"90vh",overflowY:"auto"}}>
-        {payStep==="offer" && (
-          <div>
-            <div style={{textAlign:"center",marginBottom:20}}>
-              <div style={{fontSize:34,marginBottom:8}}>🔑</div>
-              <div style={{fontSize:24,fontWeight:900,color:A,marginBottom:4}}>Unlock Elite</div>
-              <div style={{fontSize:13,color:TXT2}}>One payment. Lifetime access. Every update included.</div>
-            </div>
-            {[["💬",B,"30+ ready-to-send scripts"],["📖",T,"Full basics guide for every platform"],["🛡️",P,"Complete appeal letters"],["🎓",A,"Training videos"],["🧠",G,"Psychology and tip science"],["📦","#FF9900","Amazon Flex full support"]].map(function(item){
-              return (
-                <div key={item[2]} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 14px",background:item[1]+"08",border:"1px solid "+item[1]+"18",borderRadius:12,marginBottom:7}}>
-                  <span style={{fontSize:18}}>{item[0]}</span>
-                  <span style={{fontSize:13,fontWeight:600,color:"rgba(255,255,255,0.8)",flex:1}}>{item[2]}</span>
-                  <span style={{fontSize:13,fontWeight:700,color:G}}>{"✓"}</span>
-                </div>
-              );
-            })}
-            <div style={{marginBottom:16,marginTop:12}}>
-              {FAQ.map(function(f, i){
-                return (
-                  <div key={i} style={{borderBottom:"1px solid rgba(255,255,255,0.06)"}}>
-                    <div onClick={function(){setFaqOpen(faqOpen===i?null:i);}} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"11px 4px",cursor:"pointer"}}>
-                      <span style={{fontSize:13,fontWeight:700,color:TXT2}}>{f.q}</span>
-                      <span style={{color:TXT3,marginLeft:8}}>{faqOpen===i?"▲":"▼"}</span>
-                    </div>
-                    {faqOpen===i && <div style={{padding:"0 4px 11px",fontSize:13,color:TXT3,lineHeight:1.7}}>{f.a}</div>}
-                  </div>
-                );
-              })}
-            </div>
-            <a href={STRIPE} target="_blank" rel="noopener noreferrer" style={{display:"block",textDecoration:"none",textAlign:"center",background:"linear-gradient(135deg,#FF9F0A,#E8860A)",borderRadius:50,padding:"15px",fontSize:16,fontWeight:900,color:"#000",boxShadow:"0 10px 30px rgba(255,159,10,0.4)",marginBottom:10}}>Unlock Elite - $10</a>
-            <button onClick={function(){setPayStep("code");}} style={{width:"100%",background:"transparent",border:"1px solid rgba(255,255,255,0.12)",borderRadius:50,padding:"13px",fontSize:14,fontWeight:700,color:TXT2,marginBottom:8,fontFamily:"inherit"}}>I already have a code</button>
-            <button onClick={function(){setShowPay(false);}} style={{width:"100%",background:"transparent",border:"none",padding:"10px",fontSize:13,color:TXT3,fontFamily:"inherit"}}>Maybe later</button>
-          </div>
-        )}
-        {payStep==="code" && (
-          <div>
-            <div style={{fontSize:20,fontWeight:900,marginBottom:6}}>Enter Your Code</div>
-            <div style={{fontSize:13,color:TXT2,marginBottom:16}}>After purchasing, enter your unlock code below.</div>
-            <input value={codeInput} onChange={function(e){setCodeInput(e.target.value);}} placeholder="DROPXXXX" style={{width:"100%",background:"rgba(255,255,255,0.05)",border:"1px solid "+(codeErr?"#FF453A":"rgba(255,255,255,0.12)"),borderRadius:12,padding:"13px 14px",fontSize:16,color:TXT,marginBottom:10}}/>
-            <button onClick={tryCode} style={{width:"100%",background:"linear-gradient(135deg,#FF9F0A,#E8860A)",border:"none",borderRadius:14,padding:"14px",fontSize:15,fontWeight:800,color:"#000",marginBottom:10,fontFamily:"inherit"}}>Activate</button>
-            <button onClick={function(){setPayStep("offer");}} style={{width:"100%",background:"transparent",border:"none",padding:"10px",fontSize:13,color:TXT3,fontFamily:"inherit"}}>Back</button>
-          </div>
-        )}
-      </div>
-    </div>
-  )}
-
-  <div onClick={handleTap} style={{position:"fixed",bottom:90,right:16,width:1,height:1,opacity:0}}/>
-</div>
-
-);
+  );
 }
 
-ReactDOM.render(React.createElement(App), document.getElementById(“root”));
+function SaberSection() {
+  var activeS = useState(null); var active = activeS[0]; var setActive = activeS[1];
+  return (
+    <div style={{padding:"24px 18px"}}>
+      <div style={{textAlign:"center",marginBottom:28}}>
+        <div style={{fontSize:13,fontWeight:700,letterSpacing:"3px",color:"rgba(79,195,247,0.8)",marginBottom:8,textTransform:"uppercase"}}>Weapon of choice</div>
+        <div style={{fontSize:26,fontWeight:900}}>Which are you wielding today?</div>
+      </div>
+      <div style={{display:"flex",gap:12,marginBottom:20}}>
+        {[
+          {id:"saber", e:"🔵", label:"Lightsaber", sub:"Han Solo mode", color:"#4fc3f7", msg:"\"Kid, I've been from one end of this galaxy to the other and I've never seen anything that makes me believe you can't handle today.\"", title:"Han Solo Energy Activated"},
+          {id:"tetsusaiga", e:"⚔️", label:"Tetsusaiga", sub:"Inuyasha mode", color:"#ffd700", msg:"\"Wind Scar!\" — You've got a weapon that gets stronger when you protect the people you love. Use it.", title:"Inuyasha Energy Activated"},
+        ].map(function(w) {
+          var on = active === w.id;
+          return (
+            <div key={w.id} onClick={function(){setActive(on ? null : w.id);}} style={{flex:1,background:on?"rgba("+( w.id==="saber"?"79,195,247":"255,215,0")+",0.12)":"rgba(255,255,255,0.04)",border:"2px solid "+(on?w.color:"rgba(255,255,255,0.08)"),borderRadius:20,padding:"24px 14px",textAlign:"center",cursor:"pointer",transition:"all 0.2s"}}>
+              <div style={{fontSize:40,marginBottom:10}}>{w.e}</div>
+              <div className={on&&w.id==="saber"?"saber-glow":""} style={{width:4,height:80,background:on?w.color:"rgba(255,255,255,0.2)",borderRadius:2,margin:"0 auto 12px",boxShadow:on?"0 0 12px "+w.color+",0 0 30px "+w.color:"none",transition:"all 0.3s"}}/>
+              <div style={{fontSize:13,fontWeight:800,color:on?w.color:"rgba(255,255,255,0.6)"}}>{w.label}</div>
+              <div style={{fontSize:11,color:"rgba(255,255,255,0.3)",marginTop:4}}>{w.sub}</div>
+            </div>
+          );
+        })}
+      </div>
+      {active && (function() {
+        var w = active==="saber" ? {color:"#4fc3f7",title:"Han Solo Energy Activated",msg:"\"Kid, I've been from one end of this galaxy to the other and I've never seen anything that makes me believe you can't handle today.\""} : {color:"#ffd700",title:"Inuyasha Energy Activated",msg:"\"Wind Scar!\" — You've got a weapon that gets stronger when you protect the people you love. Use it."};
+        return (
+          <div className="fade-up" style={{background:"rgba(255,255,255,0.04)",border:"1px solid "+(w.color+"44"),borderRadius:16,padding:"18px",textAlign:"center"}}>
+            <div style={{fontSize:16,fontWeight:700,color:w.color,marginBottom:8}}>{w.title}</div>
+            <div style={{fontSize:13,color:"rgba(255,255,255,0.65)",lineHeight:1.7}}>{w.msg}</div>
+          </div>
+        );
+      })()}
+    </div>
+  );
+}
+
+function ClosingSection() {
+  return (
+    <div style={{padding:"24px 18px 60px",textAlign:"center"}}>
+      <div className="heart-pulse" style={{fontSize:60,marginBottom:24}}>💛</div>
+      <div style={{fontSize:28,fontWeight:900,marginBottom:16,lineHeight:1.3}}>
+        You are loved.<br/>
+        <span className="shimmer-text">Full stop.</span>
+      </div>
+      <div style={{fontSize:15,color:"rgba(255,255,255,0.6)",lineHeight:1.8,maxWidth:340,margin:"0 auto 24px"}}>
+        Not because of what you do.<br/>
+        Not because of how you perform.<br/>
+        Just because you're <span style={{color:"#ffd700",fontWeight:700}}>you</span>, and that's more than enough.
+      </div>
+      <div style={{background:"rgba(255,215,0,0.06)",border:"1px solid rgba(255,215,0,0.2)",borderRadius:18,padding:"20px",maxWidth:360,margin:"0 auto"}}>
+        <div style={{fontSize:13,color:"rgba(255,255,255,0.5)",lineHeight:1.8}}>
+          Inuyasha fought across a whole era for the people he loved. Kagome walked through a time-portal and never looked back. Sesshomaru quietly became someone's entire world. Han Solo said "I know" and meant it with everything.
+        </div>
+        <div style={{fontSize:14,fontWeight:800,color:"#ffd700",marginTop:12}}>
+          You belong in that lineup, Brandon. 🌟
+        </div>
+      </div>
+    </div>
+  );
+}
+
+var TABS = [
+  {id:"quotes",  e:"⚔️", label:"Quotes"},
+  {id:"reasons", e:"💛", label:"Reasons"},
+  {id:"hype",    e:"🌟", label:"Hype"},
+  {id:"jokes",   e:"😂", label:"Jokes"},
+  {id:"saber",   e:"🔵", label:"Weapon"},
+  {id:"love",    e:"🌸", label:"You"},
+];
+
+function App() {
+  var startS = useState(false); var started = startS[0]; var setStarted = startS[1];
+  var tabS = useState("quotes"); var tab = tabS[0]; var setTab = tabS[1];
+
+  if (!started) {
+    return (
+      <div style={{position:"relative",minHeight:"100vh",background:"#0a0a1a"}}>
+        <Stars/>
+        <HeroSection onNext={function(){setStarted(true);}}/>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{maxWidth:430,margin:"0 auto",minHeight:"100vh",display:"flex",flexDirection:"column",background:"#0a0a1a",position:"relative"}}>
+      <Stars/>
+      <div style={{flex:1,overflowY:"auto",paddingBottom:76,position:"relative",zIndex:1}}>
+        {tab==="quotes"  && <QuotesSection/>}
+        {tab==="reasons" && <ReasonsSection/>}
+        {tab==="hype"    && <AffirmationSection/>}
+        {tab==="jokes"   && <JokesSection/>}
+        {tab==="saber"   && <SaberSection/>}
+        {tab==="love"    && <ClosingSection/>}
+      </div>
+      <div style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:430,background:"rgba(10,10,26,0.93)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",borderTop:"1px solid rgba(255,215,0,0.1)",padding:"6px 0 10px",zIndex:100}}>
+        <div style={{display:"flex",justifyContent:"space-around"}}>
+          {TABS.map(function(n) {
+            var active = tab === n.id;
+            return (
+              <button key={n.id} onClick={function(){setTab(n.id);}} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:2,background:"transparent",border:"none",padding:"5px 2px",fontFamily:"inherit"}}>
+                <div style={{fontSize:active?22:18}}>{n.e}</div>
+                <div style={{fontSize:9,fontWeight:active?800:500,color:active?"#ffd700":"rgba(255,255,255,0.3)"}}>{n.label}</div>
+                {active && <div style={{width:14,height:2,borderRadius:99,background:"#ffd700",marginTop:1}}/>}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.render(React.createElement(App), document.getElementById("root"));
 
   </script>
 </body>
