@@ -44,42 +44,43 @@ var useState = React.useState;
 var useEffect = React.useEffect;
 
 var HYPE_MESSAGES = [
-  {e:"⚔️", quote:"\"I am not afraid to die protecting what is important to me.\"", char:"Inuyasha", vibe:"You fight just like that. Every. Single. Day."},
-  {e:"🌙", quote:"\"It is not that I care about you. I simply... find myself unwilling to see you suffer.\"", char:"Sesshomaru", vibe:"(He literally would NOT say this to just anyone. You're special. Obviously.)"},
-  {e:"🌸", quote:"\"Even if I lose this feeling, I'll still keep on loving you.\"", char:"Kagome", vibe:"That's you. That's literally just you."},
-  {e:"🚀", quote:"\"Never tell me the odds!\"", char:"Han Solo", vibe:"The odds were 3,720 to 1 and he did it anyway. So can you."},
-  {e:"⭐", quote:"\"I've got a bad feeling about this.\"", char:"Han Solo", vibe:"Same, but you always come out the other side. Always."},
-  {e:"🌺", quote:"\"I didn't ask for your help!\" \"And yet here I am.\"", char:"Inuyasha & Kagome", vibe:"Sometimes the best people just show up. You are those people."},
-  {e:"🐾", quote:"\"I want to protect her. Even if it destroys me.\"", char:"Inuyasha", vibe:"The way you care about people? This is literally you, no notes."},
-  {e:"🌟", quote:"\"Don't let anyone make you feel like you don't deserve what you want.\"", char:"Han Solo (vibes)", vibe:"You deserve EVERYTHING. Write that down."},
+  {e:"⚔️", img:"https://static.wikia.nocookie.net/inuyasha/images/4/4e/Inuyasha_Anime.jpg", quote:"\"I am not afraid to die protecting what is important to me.\"", char:"Inuyasha", vibe:"I watch you fight like that every single day, and honestly? It makes my whole heart full."},
+  {e:"🌙", img:"https://static.wikia.nocookie.net/inuyasha/images/6/6e/Sessh%C5%8Dmaru_Anime.jpg", quote:"\"It is not that I care about you. I simply... find myself unwilling to see you suffer.\"", char:"Sesshomaru", vibe:"(I am Sesshomaru in this scenario. I would never admit it. But I find myself unwilling to see you suffer. Obviously.)"},
+  {e:"🌸", img:"https://static.wikia.nocookie.net/inuyasha/images/8/8d/Kagome_Higurashi.jpg", quote:"\"Even if I lose this feeling, I'll still keep on loving you.\"", char:"Kagome", vibe:"I picked this one for you on purpose. Because that's exactly how I feel about you."},
+  {e:"🚀", img:"https://static.wikia.nocookie.net/starwars/images/e/e4/HanSolo.jpg", quote:"\"Never tell me the odds!\"", char:"Han Solo", vibe:"The odds were 3,720 to 1 and he did it anyway. I've never once doubted you'd do the same."},
+  {e:"⭐", img:"https://static.wikia.nocookie.net/starwars/images/e/e4/HanSolo.jpg", quote:"\"I've got a bad feeling about this.\"", char:"Han Solo", vibe:"Same, honestly. But I've watched you come out the other side every single time, and I'm not stopping my watch now."},
+  {e:"🌺", img:"https://static.wikia.nocookie.net/inuyasha/images/4/4e/Inuyasha_Anime.jpg", quote:"\"I didn't ask for your help!\" \"And yet here I am.\"", char:"Inuyasha & Kagome", vibe:"I didn't wait to be asked either. I'm just here. That's the whole thing."},
+  {e:"🐾", img:"https://static.wikia.nocookie.net/inuyasha/images/4/4e/Inuyasha_Anime.jpg", quote:"\"I want to protect her. Even if it destroys me.\"", char:"Inuyasha", vibe:"The way you love people like this — I see it, Brandon. I see it and I think about it all the time."},
+  {e:"🌟", img:"https://static.wikia.nocookie.net/starwars/images/e/e4/HanSolo.jpg", quote:"\"Don't let anyone make you feel like you don't deserve what you want.\"", char:"Han Solo (vibes)", vibe:"I need you to hear this one from me specifically: you deserve everything. I mean that. Everything."},
+  {e:"🦊", img:"https://static.wikia.nocookie.net/inuyasha/images/5/50/Shippo.jpg", quote:"\"I'm scared. But I'm still going.\"", char:"Shippo", vibe:"This one reminded me most of you. Small, brave, terrified, loyal, absolutely going anyway. I love that about you so much."},
 ];
 
 var REASONS = [
-  {e:"🫂", t:"You make hard days lighter"},
-  {e:"💡", t:"You notice what others miss"},
-  {e:"🐺", t:"You have Sesshomaru-level composure (mostly)"},
-  {e:"😂", t:"Your laugh is genuinely the best sound"},
-  {e:"🌸", t:"You love deeply like Kagome"},
-  {e:"🚀", t:"You never back down (very Han Solo of you)"},
-  {e:"🔥", t:"When you believe in something, you go all in"},
-  {e:"🌙", t:"You're beautiful even when you think you're not"},
-  {e:"⚔️", t:"You've overcome things that would stop most people"},
-  {e:"💛", t:"You are, objectively, someone's favourite person"},
+  {e:"🫂", t:"You make my hard days lighter just by existing"},
+  {e:"💡", t:"You notice things other people walk right past"},
+  {e:"🐺", t:"You have Sesshomaru-level composure and I genuinely admire it"},
+  {e:"😂", t:"Your laugh is one of my favourite sounds in the world"},
+  {e:"🌸", t:"You love people the way Kagome does — completely and without conditions"},
+  {e:"🚀", t:"You never back down from what matters — very Han Solo of you, I love it"},
+  {e:"🔥", t:"When you believe in something you go all in and it's incredible to witness"},
+  {e:"🌙", t:"You are beautiful even on the days you can't see it yourself"},
+  {e:"⚔️", t:"You've overcome things that would have stopped most people cold"},
+  {e:"💛", t:"You are, without question, one of my favourite people on this planet"},
 ];
 
 var AFFIRMATIONS = [
-  "You are not too much. You are exactly enough.",
-  "The galaxy literally needed you specifically.",
-  "Sesshomaru didn't become Lord of the Western Lands by being 'pretty good.' Neither will you.",
-  "Han Solo flew through an asteroid field at 3,720-to-1 odds. Your situation? Way more manageable.",
-  "Inuyasha would half-demon-sprint through a demon horde for you. That's the energy you deserve.",
-  "You are doing better than you think you are.",
-  "Bad day? Even Kagome fell into the well. She still saved everything.",
-  "You are someone's favourite part of the day.",
-  "The force is strong with this one. (This one being you. Obviously.)",
-  "You are braver than you feel right now.",
-  "Sesshomaru crossed dimensions for Rin. You matter that much to the right people.",
-  "Rest is not giving up. Even Han Solo had to land the Falcon sometimes.",
+  "You are not too much. You are exactly enough. I need you to believe that.",
+  "I genuinely think the world needed you specifically in it. Not a version of you. You.",
+  "Sesshomaru didn't become Lord of the Western Lands by being 'pretty good.' You're not 'pretty good' either. You're the whole thing.",
+  "Han Solo flew through an asteroid field at 3,720-to-1 odds. I have seen you do harder things than that.",
+  "Inuyasha would half-demon-sprint through a demon horde for you. That is the energy I want you to feel right now.",
+  "I know you think you're behind. You're not. You are doing so much better than you think.",
+  "Bad day? Even Kagome fell into the well. She still came back. You always come back too.",
+  "You are someone's favourite part of the day. You are my favourite part of many days.",
+  "The force is strong with this one. This one is you. I've always thought so.",
+  "You are braver right now, in this moment, than you are giving yourself credit for.",
+  "Sesshomaru crossed dimensions for Rin. I would cross a lot of things for you too.",
+  "Rest is not giving up. Even Han Solo had to land the Falcon. Let yourself land sometimes.",
 ];
 
 var JOKES = [
@@ -89,6 +90,7 @@ var JOKES = [
   {setup:"Why is Kagome an amazing student?", punchline:"She has a time machine and still shows up for the people she loves. Extra credit: unlimited."},
   {setup:"Inuyasha vs a to-do list:", punchline:"\"I'll WIND SCAR this list!\" *the dishes are still not done* *Kagome sighs*"},
   {setup:"What's Sesshomaru's morning routine?", punchline:"Wake up. Stare into the middle distance. Contemplate the nature of power. Silently acknowledge that Rin made him breakfast. Never say thank you. Leave. (He appreciates it deeply.)"},
+  {setup:"Shippo tries to help with a problem:", punchline:"\"I can handle it! I'm not scared! I'm a fox demon!\" *immediately trips over his own tail* *gets back up* *tries again* *you love him so much*"},
 ];
 
 function Stars() {
@@ -115,8 +117,8 @@ function HeroSection(props) {
         <span className="shimmer-text">Hey, Brandon.</span>
       </div>
       <div style={{fontSize:18,color:"rgba(255,255,255,0.7)",lineHeight:1.7,maxWidth:340,marginBottom:36}}>
-        Someone made this for you because you matter a lot.<br/>
-        <span style={{color:"rgba(255,215,0,0.9)",fontWeight:700}}>A lot</span> a lot.
+        I made this for you, and I'd make it a{" "}
+        <span style={{color:"rgba(255,215,0,0.9)",fontWeight:700}}>thousand times.</span>
       </div>
       <button onClick={props.onNext} style={{background:"linear-gradient(135deg,#ffd700,#ff9f0a)",border:"none",borderRadius:50,padding:"15px 36px",fontSize:16,fontWeight:800,color:"#000",boxShadow:"0 8px 30px rgba(255,215,0,0.4)"}}>
         Let's go ✨
@@ -135,9 +137,18 @@ function QuotesSection() {
       {HYPE_MESSAGES.map(function(q, i) {
         return (
           <div key={i} className="pop-in" style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,215,0,0.2)",borderRadius:20,padding:"22px 20px",marginBottom:14,animationDelay:(i*0.05)+"s"}}>
-            <div style={{fontSize:28,marginBottom:12}}>{q.e}</div>
+            <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:12}}>
+              <div style={{position:"relative",width:40,height:40,flexShrink:0}}>
+                <img src={q.img} alt={q.char}
+                  onError={function(ev){ev.target.style.display="none";ev.target.nextSibling.style.display="flex";}}
+                  style={{width:40,height:40,borderRadius:"50%",objectFit:"cover",border:"1.5px solid rgba(255,215,0,0.4)",display:"block"}}/>
+                <div style={{display:"none",width:40,height:40,borderRadius:"50%",background:"rgba(255,215,0,0.1)",border:"1.5px solid rgba(255,215,0,0.4)",alignItems:"center",justifyContent:"center",fontSize:20,position:"absolute",top:0,left:0}}>
+                  {q.e}
+                </div>
+              </div>
+              <div style={{fontSize:11,fontWeight:700,color:"rgba(255,215,0,0.7)",letterSpacing:"1.5px",textTransform:"uppercase"}}>— {q.char}</div>
+            </div>
             <div style={{fontSize:15,color:"rgba(255,255,255,0.9)",lineHeight:1.75,fontStyle:"italic",marginBottom:12}}>{q.quote}</div>
-            <div style={{fontSize:11,fontWeight:700,color:"rgba(255,215,0,0.6)",letterSpacing:"1.5px",marginBottom:8,textTransform:"uppercase"}}>— {q.char}</div>
             <div style={{fontSize:13,color:"rgba(255,255,255,0.55)",lineHeight:1.6,borderLeft:"2px solid rgba(255,215,0,0.3)",paddingLeft:12}}>{q.vibe}</div>
           </div>
         );
@@ -267,20 +278,23 @@ function ClosingSection() {
     <div style={{padding:"24px 18px 60px",textAlign:"center"}}>
       <div className="heart-pulse" style={{fontSize:60,marginBottom:24}}>💛</div>
       <div style={{fontSize:28,fontWeight:900,marginBottom:16,lineHeight:1.3}}>
-        You are loved.<br/>
+        I love you, Brandon.<br/>
         <span className="shimmer-text">Full stop.</span>
       </div>
       <div style={{fontSize:15,color:"rgba(255,255,255,0.6)",lineHeight:1.8,maxWidth:340,margin:"0 auto 24px"}}>
         Not because of what you do.<br/>
         Not because of how you perform.<br/>
-        Just because you're <span style={{color:"#ffd700",fontWeight:700}}>you</span>, and that's more than enough.
+        Just because you're <span style={{color:"#ffd700",fontWeight:700}}>you</span>, and that has always been more than enough for me.
       </div>
       <div style={{background:"rgba(255,215,0,0.06)",border:"1px solid rgba(255,215,0,0.2)",borderRadius:18,padding:"20px",maxWidth:360,margin:"0 auto"}}>
         <div style={{fontSize:13,color:"rgba(255,255,255,0.5)",lineHeight:1.8}}>
-          Inuyasha fought across a whole era for the people he loved. Kagome walked through a time-portal and never looked back. Sesshomaru quietly became someone's entire world. Han Solo said "I know" and meant it with everything.
+          Inuyasha fought across a whole era for the people he loved. Kagome walked through a time-portal and never once looked back. Sesshomaru quietly became someone's entire world without ever admitting it. Han Solo said "I know" and meant it with everything he had. Shippo was scared every single time and showed up anyway.
         </div>
         <div style={{fontSize:14,fontWeight:800,color:"#ffd700",marginTop:12}}>
-          You belong in that lineup, Brandon. 🌟
+          You belong in that lineup, Brandon. You always have. 🌟
+        </div>
+        <div style={{fontSize:15,fontWeight:700,color:"rgba(255,215,0,0.85)",marginTop:16,lineHeight:1.7,fontStyle:"italic"}}>
+          I love you until the moon no longer exists.
         </div>
       </div>
     </div>
