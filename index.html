@@ -30,7 +30,18 @@ button:active{opacity:0.75;}
 .shimmer-text{background:linear-gradient(90deg,#ffd700,#fff,#ffd700,#fff,#ffd700);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 3s linear infinite;}
 .saber-glow{animation:saber 2s ease-in-out infinite;}
 .heart-pulse{animation:heartPulse 1.5s ease-in-out infinite;}
-.star{position:fixed;border-radius:50%;background:#fff;animation:twinkle var(--dur,3s) ease-in-out infinite;animation-delay:var(--del,0s);}
+.star{position:fixed;border-radius:50%;animation:twinkle var(--dur,3s) ease-in-out infinite;animation-delay:var(--del,0s);}
+
+@keyframes auroraFloat{0%,100%{transform:scale(1) translate(0px,0px)}25%{transform:scale(1.14) translate(-22px,32px)}50%{transform:scale(0.92) translate(18px,-22px)}75%{transform:scale(1.07) translate(-10px,12px)}}
+@keyframes shootStar{0%,78%,100%{opacity:0;transform:translateX(0) translateY(0) rotate(-38deg)}3%{opacity:1}16%{opacity:0;transform:translateX(-700px) translateY(600px) rotate(-38deg)}}
+@keyframes tabGlow{0%,100%{box-shadow:0 0 4px rgba(255,215,0,0.6)}50%{box-shadow:0 0 10px rgba(255,215,0,1),0 0 20px rgba(255,215,0,0.4)}}
+@keyframes heroPulse{0%,100%{box-shadow:0 8px 30px rgba(255,215,0,0.4)}50%{box-shadow:0 8px 45px rgba(255,215,0,0.75),0 0 70px rgba(255,215,0,0.2)}}
+@keyframes orbPulse{0%,100%{opacity:0.5;transform:scale(1)}50%{opacity:0.8;transform:scale(1.05)}}
+
+.shoot{position:fixed;width:130px;height:1.5px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.9),rgba(200,180,255,0.5),transparent);border-radius:99px;pointer-events:none;opacity:0;}
+.quote-card{transition:transform 0.25s ease,box-shadow 0.25s ease!important;}
+.quote-card:hover{transform:translateY(-3px)!important;box-shadow:0 14px 36px rgba(255,215,0,0.1)!important;border-color:rgba(255,215,0,0.35)!important;}
+.tab-pip{animation:tabGlow 2s ease-in-out infinite;border-radius:99px;}
   </style>
 </head>
 <body>
@@ -95,17 +106,61 @@ var JOKES = [
 
 function Stars() {
   var items = [];
-  for (var i = 0; i < 40; i++) {
-    var size = Math.random() * 2.5 + 1;
+  var palette = ['#ffffff','#ffffff','#ffffff','#e0d0ff','#4fc3f7','#ffd700','#ffffff'];
+  for (var i = 0; i < 75; i++) {
+    var size = Math.random() * 2.8 + 0.7;
+    var color = palette[Math.floor(Math.random() * palette.length)];
     items.push(
       React.createElement('div', {
         key: i, className: 'star',
-        style: {width:size+'px',height:size+'px',left:Math.random()*100+'vw',top:Math.random()*100+'vh',
-          '--dur':(2+Math.random()*4)+'s','--del':(Math.random()*4)+'s',opacity:0.3+Math.random()*0.5}
+        style: {
+          width:size+'px', height:size+'px',
+          left:Math.random()*100+'vw', top:Math.random()*100+'vh',
+          '--dur':(2+Math.random()*5)+'s', '--del':(Math.random()*6)+'s',
+          background:color,
+          opacity:0.2+Math.random()*0.65,
+        }
       })
     );
   }
   return React.createElement('div', null, items);
+}
+
+function Aurora() {
+  var blobs = [
+    {color:'rgba(191,90,242,0.08)',size:750,left:'calc(8% - 375px)',top:'calc(18% - 375px)',dur:'22s',del:'0s'},
+    {color:'rgba(79,195,247,0.06)',size:580,left:'calc(78% - 290px)',top:'calc(52% - 290px)',dur:'28s',del:'-9s'},
+    {color:'rgba(255,215,0,0.045)',size:520,left:'calc(42% - 260px)',top:'calc(82% - 260px)',dur:'19s',del:'-15s'},
+  ];
+  return React.createElement('div',{style:{position:'fixed',inset:0,overflow:'hidden',pointerEvents:'none',zIndex:0}},
+    blobs.map(function(b,i){
+      return React.createElement('div',{key:i,style:{
+        position:'absolute',left:b.left,top:b.top,
+        width:b.size+'px',height:b.size+'px',
+        borderRadius:'50%',
+        background:'radial-gradient(circle,'+b.color+' 0%,transparent 70%)',
+        animation:'auroraFloat '+b.dur+' ease-in-out infinite',
+        animationDelay:b.del,
+      }});
+    })
+  );
+}
+
+function ShootingStars() {
+  var stars = [
+    {top:'8%',left:'88%',del:'0s',dur:'15s'},
+    {top:'4%',left:'62%',del:'-7s',dur:'19s'},
+    {top:'20%',left:'95%',del:'-12s',dur:'23s'},
+  ];
+  return React.createElement('div',{style:{position:'fixed',inset:0,overflow:'hidden',pointerEvents:'none',zIndex:0}},
+    stars.map(function(s,i){
+      return React.createElement('div',{key:i,className:'shoot',style:{
+        top:s.top, left:s.left,
+        animation:'shootStar '+s.dur+' linear infinite',
+        animationDelay:s.del,
+      }});
+    })
+  );
 }
 
 function HeroSection(props) {
@@ -120,7 +175,7 @@ function HeroSection(props) {
         I made this for you, and I'd make it a{" "}
         <span style={{color:"rgba(255,215,0,0.9)",fontWeight:700}}>thousand times.</span>
       </div>
-      <button onClick={props.onNext} style={{background:"linear-gradient(135deg,#ffd700,#ff9f0a)",border:"none",borderRadius:50,padding:"15px 36px",fontSize:16,fontWeight:800,color:"#000",boxShadow:"0 8px 30px rgba(255,215,0,0.4)"}}>
+      <button onClick={props.onNext} style={{background:"linear-gradient(135deg,#ffd700,#ff9f0a,#ffd700)",backgroundSize:"200% auto",border:"none",borderRadius:50,padding:"15px 36px",fontSize:16,fontWeight:800,color:"#000",animation:"heroPulse 2.5s ease-in-out infinite",letterSpacing:"0.5px"}}>
         Let's go ✨
       </button>
     </div>
@@ -160,7 +215,7 @@ function QuotesSection() {
       {HYPE_MESSAGES.map(function(q, i) {
         var imgUrl = q.imgChar ? imgMap[q.imgChar] : null;
         return (
-          <div key={i} className="pop-in" style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,215,0,0.2)",borderRadius:20,padding:"22px 20px",marginBottom:14,animationDelay:(i*0.05)+"s"}}>
+          <div key={i} className="pop-in quote-card" style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,215,0,0.2)",borderRadius:20,padding:"22px 20px",marginBottom:14,animationDelay:(i*0.05)+"s",cursor:"default"}}>
             <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:12}}>
               <div style={{width:44,height:44,borderRadius:"50%",overflow:"hidden",border:"1.5px solid rgba(255,215,0,0.45)",flexShrink:0,background:"rgba(255,215,0,0.08)",display:"flex",alignItems:"center",justifyContent:"center"}}>
                 {imgUrl
@@ -339,6 +394,8 @@ function App() {
   if (!started) {
     return (
       <div style={{position:"relative",minHeight:"100vh",background:"#0a0a1a"}}>
+        <Aurora/>
+        <ShootingStars/>
         <Stars/>
         <HeroSection onNext={function(){setStarted(true);}}/>
       </div>
@@ -347,6 +404,8 @@ function App() {
 
   return (
     <div style={{maxWidth:430,margin:"0 auto",minHeight:"100vh",display:"flex",flexDirection:"column",background:"#0a0a1a",position:"relative"}}>
+      <Aurora/>
+      <ShootingStars/>
       <Stars/>
       <div style={{flex:1,overflowY:"auto",paddingBottom:76,position:"relative",zIndex:1}}>
         {tab==="quotes"  && <QuotesSection/>}
@@ -364,7 +423,7 @@ function App() {
               <button key={n.id} onClick={function(){setTab(n.id);}} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:2,background:"transparent",border:"none",padding:"5px 2px",fontFamily:"inherit"}}>
                 <div style={{fontSize:active?22:18}}>{n.e}</div>
                 <div style={{fontSize:9,fontWeight:active?800:500,color:active?"#ffd700":"rgba(255,255,255,0.3)"}}>{n.label}</div>
-                {active && <div style={{width:14,height:2,borderRadius:99,background:"#ffd700",marginTop:1}}/>}
+                {active && <div className="tab-pip" style={{width:16,height:2.5,background:"#ffd700",marginTop:1}}/>}
               </button>
             );
           })}
